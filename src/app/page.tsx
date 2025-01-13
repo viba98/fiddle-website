@@ -15,7 +15,7 @@ export default function Home() {
       
       console.log('Sending request with email:', email);
       
-      const response = await fetch('https:/not.fiddle.is/api/auth/signin', {
+      const response = await fetch('https://not.fiddle.is/api/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
