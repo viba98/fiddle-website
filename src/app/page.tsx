@@ -1,13 +1,29 @@
 'use client';
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [waitlisted, setWaitlisted] = useState(false);
+
+  // Global command+enter handler
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        if (email && !loading && !emailSent) {
+          handleSignIn();
+        } else if (emailSent) {
+          window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [email, loading, emailSent, waitlisted]);
 
   const handleSignIn = async () => {
     try {
@@ -48,16 +64,6 @@ export default function Home() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      if (email && !loading && !emailSent) {
-        handleSignIn();
-      } else if (emailSent) {
-        window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
-      }
-    }
-  };
-
   return (
     <main className="flex min-h-screen flex-col items-center p-8 pt-16 bg-[#151517] text-white">
       {/* Logo + Name Section */}
@@ -91,7 +97,6 @@ export default function Home() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                onKeyDown={handleKeyDown}
                 className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-[#1E1E20] text-white placeholder-gray-400 focus:border-[#FF6101] focus:ring-1 focus:ring-[#FF6101] outline-none transition-colors"
                 disabled={loading}
               />
