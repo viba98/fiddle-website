@@ -94,6 +94,7 @@ export default function Home() {
             <div className="flex gap-2">
               <input
                 type="email"
+                autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
