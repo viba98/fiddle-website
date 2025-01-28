@@ -12,7 +12,7 @@ export default function Home() {
   // Global command+enter handler
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === 'Enter') {
         if (email && !loading && !emailSent) {
           handleSignIn();
         } else if (emailSent) {
@@ -48,7 +48,7 @@ export default function Home() {
         setEmailSent(true);
         setWaitlisted(true);
         return;
-      }
+    }
 
       // Success case
       setEmailSent(true);
@@ -66,21 +66,41 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-8 pt-16 bg-[#151517] text-white">
+      
       {/* Logo + Name Section */}
-      <div className="flex items-center gap-4 mb-16">
+      <div className="flex items-center gap-2 mb-4 absolute top-4 left-4 m-4">
         <Image
           src="/logo.png"
           alt="Fiddle Logo"
-          width={48}
-          height={48}
-          className="w-12 h-12"
+          width={16}
+          height={16}
+          className="w-8 h-8"
         />
-        <h1 className="text-4xl font-semibold">fiddle</h1>
+        <h1 className="text-base font-medium">Fiddle</h1>
+      </div>
+
+      {/* Discord Link Section */}
+      <div className="absolute top-4 right-4">
+        <a 
+          href="https://discord.gg/SXtHUhpW"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/80 rounded-lg hover:bg-[#4752C4] transition-colors"
+        >
+          <Image
+            src="/discord.svg"
+            alt="Discord"
+            width={16}
+            height={16}
+            className="w-6 h-6"
+          />
+          <span className="font-medium text-base">Join Discord</span>
+        </a>
       </div>
 
       {/* Title Section */}
-      <div className="max-w-3xl text-center mb-16">
-        <h2 className="text-5xl font-semibold leading-tight mb-4">
+      <div className="max-w-3xl text-center my-16">
+        <h2 className="text-5xl font-medium leading-tight mb-4">
           Code is the best prototyping tool.
           <br />
           So we built a better code editor
@@ -112,16 +132,16 @@ export default function Home() {
           ) : (
             <div className="flex items-center justify-between px-4 py-3 bg-[#1E1E20] border border-gray-700 rounded-lg shadow-sm">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#FF6101]" viewBox="0 0 16 16" fill="currentColor">
+                <svg className="w-5 h-5 text-white/60" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M0,9.014L1.414,7.6L5.004,11.189L14.593,1.6L16.007,3.014L5.003,14.017L0,9.014Z" />
                 </svg>
-                <span>{waitlisted ? 'Added to waitlist' : 'Login link sent'}</span>
+                <span className = 'text-white/60'>{waitlisted ? 'Added to waitlist' : 'Login link sent'}</span>
               </div>
               <button
                 onClick={() => window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank')}
-                className="text-[#FF6101] hover:text-[#FF3001] transition-colors"
+                className="text-white hover:text-[#FF3001] transition-colors"
               >
-                {waitlisted ? 'Jump Ahead ⌘↵' : 'Open Gmail ⌘↵'}
+                {waitlisted ? 'Jump Ahead ↵' : 'Open Gmail ↵'}
               </button>
             </div>
           )}
@@ -142,27 +162,8 @@ export default function Home() {
         </video>
       </div>
 
-      {/* Discord Link Section */}
-      <div className="mb-16">
-        <a 
-          href="https://discord.gg/SXtHUhpW"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 px-6 py-3 bg-[#5865F2] text-white rounded-lg hover:bg-[#4752C4] transition-colors"
-        >
-          <Image
-            src="/discord.svg"
-            alt="Discord"
-            width={24}
-            height={24}
-            className="w-6 h-6"
-          />
-          <span className="font-medium">Join our Discord</span>
-        </a>
-      </div>
-
       {/* Footer */}
-      <footer className="mt-auto pt-8 text-sm text-gray-400">
+      <footer className="mt-auto pt-8 text-sm text-gray-400 relative bottom-4 right-4">
         © Pixelparc LLC
       </footer>
     </main>
