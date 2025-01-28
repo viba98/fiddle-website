@@ -101,10 +101,11 @@ export default function Home() {
       {/* Title Section */}
       <div className="max-w-3xl text-center my-16">
         <h2 className="text-5xl font-medium leading-tight mb-4">
-          Code is the best prototyping tool.
-          <br />
-          So we built a better code editor
+          Make your designs come alive
         </h2>
+        <h3 className="text-xl text-white/80">
+          Convert your Figma designs to code and experiment on an infinite canvas
+        </h3>
       </div>
 
       {/* Get Access Section */}
