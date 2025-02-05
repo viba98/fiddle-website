@@ -82,7 +82,7 @@ export default function Home() {
       {/* Discord Link Section */}
       <div className="absolute top-4 right-4">
         <a 
-          href="https://discord.gg/SXtHUhpW"
+          href="https://discord.gg/fYUTpD86vu"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white/80 rounded-lg hover:bg-[#4752C4] transition-colors"
