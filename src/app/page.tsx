@@ -131,8 +131,14 @@ export default function Home() {
   }, []);
 
   const handleMouseMoveScrubber = (e: MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left; 
+    const target = e.currentTarget as HTMLElement; 
+    let offsetX;
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      offsetX = e.clientX - rect.left; 
+    } else{
+      offsetX = e.clientX;
+    }
 
     requestAnimationFrame(() => {
       setScrubberPosition(offsetX);
