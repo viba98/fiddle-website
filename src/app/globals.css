@@ -5,6 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --gfs: 14;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,9 +19,107 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  caret-color: #ff3101;
+}
+
+::-moz-selection {
+  background: #ff30015d;
+}
+
+::selection {
+  background: #ff30015d;
 }
 
 html, body {
   background-color: #151517;
   height: 100%;
 }
+
+.custom-divider {
+  background: repeating-linear-gradient(to right, #fff, #fff calc(4 / var(--gfs)* 1.5rem), transparent calc(4 / var(--gfs)* 1.5rem), transparent calc(8 / var(--gfs)* 1.5rem));
+  height: calc(1 / var(--gfs)* 1rem);
+  mix-blend-mode: difference;
+  transform: translateZ(0);
+}
+
+.button-l-shape {
+  position: relative;
+  display: inline-block; /* important for bounding box */
+  padding: 8px 16px;
+
+  cursor: pointer;
+}
+
+/* -- Top-left corner -- */
+.button-l-shape::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #FF3001;
+  border-right: 0;
+  border-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- Bottom-right corner -- */
+.button-l-shape::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #FF3001;
+  border-left: 0;
+  border-top: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- Wrap the text in <span> so we can attach the other 2 corners -- */
+.button-l-shape span {
+  position: relative; /* So the pseudo-elements are positioned inside this span */
+}
+
+/* -- Top-right corner -- */
+.button-l-shape span::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -16px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #FF3001;
+  border-left: 0;
+  border-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- Bottom-left corner -- */
+.button-l-shape span::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: -16px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #FF3001;
+  border-right: 0;
+  border-top: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- On hover, reveal all corners -- */
+.button-l-shape:hover::before,
+.button-l-shape:hover::after,
+.button-l-shape:hover span::before,
+.button-l-shape:hover span::after {
+  opacity: 1;
+}
+
