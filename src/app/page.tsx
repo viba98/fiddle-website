@@ -113,20 +113,29 @@ export default function Home() {
       }
     };
 
-    window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', handleGlobalKeyDown);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('keydown', handleGlobalKeyDown);
+      }
+    };
   }, [email, loading, emailSent, waitlisted, handleSignIn]);
 
-  const handleMouseMove = (e: MouseEvent) => {
-    setCursorPosition({ x: e.clientX, y: e.clientY });
-  };
-
-  // Global command+enter handler
   useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPosition({ x: e.clientX, y: e.clientY });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('mousemove', handleMouseMove);
+      }
     };
   }, []);
 
