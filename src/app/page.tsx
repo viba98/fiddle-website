@@ -296,10 +296,10 @@ export default function Home() {
 
       {/* [Play] Div */}
       <div 
-      className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs"
+      className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs mix-blend-difference"
       style={{
-        left: cursorPosition.x + (cursorPosition.x > window.innerWidth - 100 ? -100 : 10) + 'px',
-        top: cursorPosition.y + (cursorPosition.y > window.innerHeight - 50 ? -30 : 10) + 'px',
+        left: cursorPosition.x + (cursorPosition.x > window.innerWidth - 150 ? -150 : 10) + 'px',
+        top: cursorPosition.y + (cursorPosition.y > window.innerHeight - 100 ? -100 : 10) + 'px',
         pointerEvents: 'none'
       }}
     >
@@ -315,7 +315,7 @@ export default function Home() {
           muted 
           playsInline
         >
-          <source src="/teaser.mp4" type="video/mp4" />
+          <source src="/teaser-test.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
