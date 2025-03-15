@@ -115,7 +115,7 @@ export default function Home() {
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [email, loading, emailSent, waitlisted]);
+  }, [email, loading, emailSent, waitlisted, handleSignIn]);
 
   const handleMouseMove = (e: MouseEvent) => {
     setCursorPosition({ x: e.clientX, y: e.clientY });
@@ -130,19 +130,13 @@ export default function Home() {
     };
   }, []);
 
-  const handleMouseMoveScrubber = (e: MouseEvent) => {
-    const target = e.currentTarget as HTMLElement; 
-    let offsetX;
+  const handleMouseMoveScrubber: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    const target = e.currentTarget as HTMLDivElement;
     if (target) {
       const rect = target.getBoundingClientRect();
-      offsetX = e.clientX - rect.left; 
-    } else{
-      offsetX = e.clientX;
-    }
-
-    requestAnimationFrame(() => {
+      const offsetX = e.clientX - rect.left;
       setScrubberPosition(offsetX);
-    });
+    }
   };
 
   return (
