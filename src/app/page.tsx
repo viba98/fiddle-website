@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const imageUrls = [
   '/img1.png',
@@ -62,8 +62,13 @@ export default function Home() {
   const [showInput, setShowInput] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorText, setCursorText] = useState('[play]');
+  const [isBrowser, setIsBrowser] = useState(false);
 
-  const handleSignIn = async () => {
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+
+  const handleSignIn = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -99,7 +104,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [email]);
 
   // Global command+enter handler
   useEffect(() => {
@@ -168,7 +173,7 @@ export default function Home() {
           href="https://discord.gg/fYUTpD86vu"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-2 py-2 text-white/80 hover:bg-white/10 transition-colors"
+          className="flex items-center gap-2 px-2 py-2 transition-colors"
           onMouseEnter={() => setCursorText('[ Join Discord ]')}
           onMouseLeave={() => setCursorText('[ play ]')}
         >
@@ -177,10 +182,9 @@ export default function Home() {
             alt="Discord"
             width={20}
             height={20}
-            className="mix-blend-difference"
+            className="mix-blend-difference text-white/70 hover:text-white "
           />
         </a>
-        
       </div>
 
       {/* Timestamps Section */}
@@ -307,8 +311,8 @@ export default function Home() {
       <div 
       className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs mix-blend-difference"
       style={{
-        left: cursorPosition.x + (cursorPosition.x > window.innerWidth - 150 ? -150 : 10) + 'px',
-        top: cursorPosition.y + (cursorPosition.y > window.innerHeight - 100 ? -100 : 10) + 'px',
+        left: cursorPosition.x + (isBrowser && cursorPosition.x > (typeof window !== 'undefined' ? window.innerWidth : 0) - 150 ? -150 : 10) + 'px',
+        top: cursorPosition.y + (isBrowser && cursorPosition.y > (typeof window !== 'undefined' ? window.innerHeight : 0) - 100 ? -100 : 10) + 'px',
         pointerEvents: 'none'
       }}
     >
