@@ -220,6 +220,8 @@ export default function Home() {
       <div 
         className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
         onMouseMove={handleMouseMoveScrubber} 
+        onMouseEnter={() => setCursorText('')}
+onMouseLeave={() => setCursorText('[ play ]')}
       >
         <div className="z-20 gap-0">
           {/* orange Scrubber Line */}
@@ -265,21 +267,21 @@ export default function Home() {
 
         <div className="flex justify-between w-full mb-2 z-10 items-center">
           {timestamps.map((timestamp, index) => (
-            <span 
-            key={index} 
-            className={`flex-1 timestamp-l-shape button-l-shape text-xs text-white`}
-            onMouseEnter={() => setCursorText('')}
-            onMouseLeave={() => setCursorText('[ play ]')}>
-              
-            </span>
+
+<button
+key={index}
+className="flex-1  text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
+
+>
+<span>{timestamp}</span>
+</button>
           ))}
           <div className="relative">
           {!showInput ? (
             <button
               onClick={() => setShowInput(true)}
               className="button-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference"
-              onMouseEnter={() => setCursorText('')}
-              onMouseLeave={() => setCursorText('[ play ]')}
+              
             >
               <span>JOIN WAITLIST</span>
             </button>
