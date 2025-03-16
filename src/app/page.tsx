@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const imageUrls = [
   '/img1.png',
@@ -63,6 +63,10 @@ export default function Home() {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorText, setCursorText] = useState('[play]');
   const [isBrowser, setIsBrowser] = useState(false);
+  const [isCursorVisible, setIsCursorVisible] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setIsBrowser(true);
@@ -129,8 +133,16 @@ export default function Home() {
   }, [email, loading, emailSent, waitlisted, handleSignIn]);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     const handleMouseMove = (e: MouseEvent) => {
       setCursorPosition({ x: e.clientX, y: e.clientY });
+      setIsCursorVisible(true);
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        setIsCursorVisible(false);
+      }, 4000);
     };
 
     if (typeof window !== 'undefined') {
@@ -140,6 +152,7 @@ export default function Home() {
     return () => {
       if (typeof window !== 'undefined') {
         window.removeEventListener('mousemove', handleMouseMove);
+        clearTimeout(timeoutId);
       }
     };
   }, []);
@@ -153,8 +166,24 @@ export default function Home() {
     }
   };
 
+  const toggleVideo = useCallback(() => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    setCursorText(isPlaying ? '[ pause ]' : '[ play ]');
+  }, [isPlaying]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center inset-0 bg-[#151517] text-white cursor-crosshair" style={{ fontFamily: 'monospace' }}>
+    <main className="flex min-h-screen flex-col items-center inset-0 bg-[#040404] text-white cursor-crosshair" style={{ fontFamily: 'monospace' }} onClick={toggleVideo}>
       
       {/* Logo + Name Section */}
       <div className="flex items-center gap-2 mb-4 absolute top-4 left-4 m-4 z-10">
@@ -236,7 +265,13 @@ export default function Home() {
 
         <div className="flex justify-between w-full mb-2 z-10 items-center">
           {timestamps.map((timestamp, index) => (
-            <span key={index} className="flex-1 text-xs text-white">{timestamp}</span>
+            <span 
+            key={index} 
+            className={`flex-1 timestamp-l-shape button-l-shape text-xs text-white`}
+            onMouseEnter={() => setCursorText('')}
+            onMouseLeave={() => setCursorText('[ play ]')}>
+              
+            </span>
           ))}
           <div className="relative">
           {!showInput ? (
@@ -244,9 +279,9 @@ export default function Home() {
               onClick={() => setShowInput(true)}
               className="button-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference"
               onMouseEnter={() => setCursorText('')}
-          onMouseLeave={() => setCursorText('[ play ]')}
+              onMouseLeave={() => setCursorText('[ play ]')}
             >
-               <span>JOIN WAITLIST</span>
+              <span>JOIN WAITLIST</span>
             </button>
           ) : !emailSent ? (
             <div className="flex gap-2">
@@ -268,9 +303,6 @@ export default function Home() {
           ) : (
             <div className="flex items-center justify-between px-2 py-2 bg-[#1E1E20] border border-gray-700 shadow-sm gap-6 ">
               <div className="flex items-center gap-2">
-                {/* <svg className="w-3 h-3 text-white/60" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M0,9.014L1.414,7.6L5.004,11.189L14.593,1.6L16.007,3.014L5.003,14.017L0,9.014Z" />
-                </svg> */}
                 <span className='text-white/60 text-xs uppercase mix-blend-difference' style={{ fontFamily: 'monospace' }}>{waitlisted ? 'Added' : 'Login link sent'}</span>
               </div>
               <button
@@ -309,24 +341,29 @@ export default function Home() {
 
       {/* [Play] Div */}
       <div 
-      className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs mix-blend-difference"
-      style={{
-        left: cursorPosition.x + (isBrowser && cursorPosition.x > (typeof window !== 'undefined' ? window.innerWidth : 0) - 150 ? -150 : 10) + 'px',
-        top: cursorPosition.y + (isBrowser && cursorPosition.y > (typeof window !== 'undefined' ? window.innerHeight : 0) - 100 ? -100 : 10) + 'px',
-        pointerEvents: 'none'
-      }}
-    >
-      {cursorText}
-    </div>
+        className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs mix-blend-difference"
+        style={{
+          left: cursorPosition.x + (isBrowser && cursorPosition.x > (typeof window !== 'undefined' ? window.innerWidth : 0) - 150 ? -150 : 10) + 'px',
+          top: cursorPosition.y + (isBrowser && cursorPosition.y > (typeof window !== 'undefined' ? window.innerHeight : 0) - 100 ? -100 : 10) + 'px',
+          pointerEvents: 'none',
+          opacity: isCursorVisible ? 1 : 0,
+          transition: 'opacity 0.3s ease'
+        }}
+      >
+        {cursorText}
+      </div>
 
       {/* Video Section */}
       <div className="w-screen h-screen z-0 absolute inset-0">
         <video 
+          ref={videoRef}
           className="w-screen h-screen rounded-lg shadow-lg absolute inset-0"
           autoPlay 
           loop 
           muted 
           playsInline
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         >
           <source src="/teaser-test.mp4" type="video/mp4" />
           Your browser does not support the video tag.

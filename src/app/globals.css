@@ -123,3 +123,26 @@ html, body {
   opacity: 1;
 }
 
+/* New class for timestamps */
+.timestamp-l-shape {
+  position: relative;
+  display: inline-block; /* important for bounding box */
+  padding: 2px 4px; /* Adjust padding as needed */
+}
+
+/* Override the border color for timestamps */
+.timestamp-l-shape::before,
+.timestamp-l-shape::after,
+.timestamp-l-shape span::before,
+.timestamp-l-shape span::after {
+  border: 1px solid white; /* Change color to white for timestamps */
+}
+
+/* On hover, reveal all corners for timestamps */
+.timestamp-l-shape:hover::before,
+.timestamp-l-shape:hover::after,
+.timestamp-l-shape:hover span::before,
+.timestamp-l-shape:hover span::after {
+  opacity: 1;
+}
+
