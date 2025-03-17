@@ -45,6 +45,38 @@ const timestamps = [
   '00:20 | dev mode'
 ]
 
+async function addContactToLoops(email, firstName = '', lastName = '', source) {
+    const url = "https://app.loops.so/api/v1/contacts/create";
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.VITE_LOOPS_API_AUTH_TOKEN}`
+    };
+    const payload = {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        source: source,
+        hasAccess: false
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log("Contact added to Loops:", responseData);
+    } catch (error) {
+        console.error("Error adding contact to Loops:", error);
+    }
+}
+
 export default function Home() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -67,41 +99,26 @@ export default function Home() {
 
   const handleSignIn = useCallback(async () => {
     try {
-      setLoading(true);
-      
-      console.log('Sending request with email:', email);
-      
-      const response = await fetch('https://not.fiddle.is/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, source: "https://www.fiddle.is" })
-      });
+        setLoading(true);
+        
+        console.log('Adding contact with email:', email);
+        
+        // Call the addContactToLoops function instead of the sign-in fetch
+        await addContactToLoops(email, '', '', 'www.fiddle.is');
 
-      const data = await response.json();
-      console.log('Response data:', data);
-      
-      if (!response.ok) {
-        console.log('Sign in failed:', data.error || 'Sign in failed');
+        // Assuming success, you can set the emailSent and waitlisted states
+        setEmailSent(true);
+        setWaitlisted(false);
+        
+    } catch (err) {
+        console.error('Error adding contact to Loops:', err);
+        // On any error, show waitlist message
         setEmailSent(true);
         setWaitlisted(true);
-        return;
-    }
-
-      // Success case
-      setEmailSent(true);
-      setWaitlisted(false);
-      
-    } catch (err) {
-      console.error('Sign in failed:', err);
-      // On any error, show waitlist message
-      setEmailSent(true);
-      setWaitlisted(true);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }, [email]);
+}, [email]);
 
   // Global command+enter handler
   useEffect(() => {
@@ -314,8 +331,8 @@ export default function Home() {
                   autoFocus
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full px-2 py-2 text-xs border border-gray-700 bg-[#1E1E20] text-white placeholder-gray-400 focus:border-[#FF3101] focus:ring-1 focus:ring-[#FF3101] outline-none transition-colors"
+                  placeholder="Enter Email"
+                  className="w-full px-2 py-2 text-xs border border-neutral-800 bg-[#111111] text-white placeholder-gray-400 focus:border-[#FF3101] focus:ring-1 focus:ring-[#FF3101] outline-none transition-colors"
                   disabled={loading}
                 />
                 <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-sm">
