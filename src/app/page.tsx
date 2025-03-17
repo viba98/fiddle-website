@@ -488,33 +488,33 @@ export default function Home() {
           <div className="absolute inset-0 bg-white/5 z-10"></div>
           
           {/* Mobile logo */}
-          <div className="absolute top-4 left-4 right-0 z-20 flex">
+          <div className="absolute top-4 left-4 right-0 z-20 flex mix-blend-difference">
             <span className="text-sm font-bold text-white">FIDDLE</span>
           </div>
           
           {/* Mobile waitlist button */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 z-20">
+          <div className={`fixed bottom-0 left-0 right-0 z-20 ${!showInput ? 'mix-blend-difference' : ''}`}>
             {!emailSent ? 
-            // (!showInput ? (
-            //     <button
-            //       onClick={(e) => {
-            //         e.stopPropagation();
-            //         setShowInput(true);
-            //       }}
-            //       className="w-[calc(100%-32px)] py-4 bg-[#ff3101] text-white font-bold text-center"
-            //     >
-            //       JOIN WAITLIST
-            //     </button>
-            //   ) : 
+            (!showInput ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInput(true);
+                  }}
+                  className="w-[calc(100%-32px)] p-8 bg-none text-white font-medium text-left text-6xl mix-blend-difference"
+                >
+                  JOIN WAITLIST →
+                </button>
+              ) : 
             (
-                <div className="w-[calc(100%-64px)] bg-black p-4 rounded-md">
+                <div className="w-screen h-screen inset-0 bg-black rounded-md px-8 py-16">
                   <input
                     type="email"
                     autoFocus
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="w-[calc(100%-64px)] px-4 py-3 mb-3 border border-gray-300 text-black"
+                    className="w-full px-4 py-3 mb-3 border border-zinc-700 text-white bg-zinc-800 focus:ring-[#FF3001] focus:ring-1 focus:outline-none"
                     disabled={loading}
                   />
                   <button
@@ -522,15 +522,15 @@ export default function Home() {
                       e.stopPropagation();
                       handleSignIn();
                     }}
-                    className="w-[calc(100%-64px)] py-3 bg-[#FF3001] text-white font-bold"
+                    className="w-full py-3 text-[#ff3101] font-bold"
                     disabled={loading}
                   >
-                    {loading ? "SUBMITTING..." : "JOIN WAITLIST"}
+                    {loading ? "SUBMITTING..." : "SUBMIT"}
                   </button>
                 </div>
-              // )
+              )
             ) : (
-              <div className="w-full bg-black p-4 rounded-md text-center">
+              <div className="w-full bg-black px-8 py-16 rounded-md text-center h-screen">
                 <p className="text-white mb-3">
                   {waitlisted ? "You've been added to our waitlist!" : "Login link sent!"}
                 </p>
@@ -540,7 +540,7 @@ export default function Home() {
                     const tweetUrl = "https://twitter.com/intent/tweet?text=Check%20out%20this%20amazing%20video%20from%20Fiddle!&url=[insert handle]";
                     window.open(tweetUrl, '_blank');
                   }}
-                  className="w-full py-3 bg-[#FF3001] text-white font-bold rounded-md"
+                  className="w-full py-3 text-[#ff3101] font-bold rounded-md"
                 >
                   {waitlisted ? "JUMP AHEAD" : "OPEN GMAIL"}
                 </button>
