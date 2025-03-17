@@ -45,7 +45,7 @@ const timestamps = [
   '00:20 | dev mode'
 ]
 
-async function addContactToLoops(email, firstName = '', lastName = '', source) {
+async function addContactToLoops(email: string, firstName: string = '', lastName: string = '', source: string): Promise<void> {
     const url = "https://app.loops.so/api/v1/contacts/create";
     const headers = {
         "Content-Type": "application/json",
@@ -89,7 +89,6 @@ export default function Home() {
   const [isBrowser, setIsBrowser] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMouseOverTimestamps, setIsMouseOverTimestamps] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -210,10 +209,13 @@ export default function Home() {
     const target = e.currentTarget as HTMLDivElement;
     const rect = target.getBoundingClientRect();
     const offsetX = e.clientX - rect.left; // Get the X position relative to the timestamp section
-    const newPosition = (offsetX / rect.width) * videoRef.current?.duration; // Calculate the new time based on the click position
 
-    if (videoRef.current) {
-      videoRef.current.currentTime = newPosition; // Update the video's current time
+    // Check if videoRef.current and its duration are defined
+    if (videoRef.current && videoRef.current.duration) {
+        const newPosition = (offsetX / rect.width) * videoRef.current.duration; // Calculate the new time based on the click position
+        videoRef.current.currentTime = newPosition; // Update the video's current time
+    } else {
+        console.warn("Video duration is not available yet.");
     }
   };
 
@@ -256,11 +258,9 @@ export default function Home() {
         className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
         onMouseEnter={() => {
           setCursorText('');
-          setIsMouseOverTimestamps(true);
         }}
         onMouseLeave={() => {
           setCursorText('[ play ]');
-          setIsMouseOverTimestamps(false);
         }}
         onClick={handleTimestampClick}
       >
