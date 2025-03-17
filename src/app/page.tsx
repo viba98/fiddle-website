@@ -82,11 +82,41 @@ export default function Home() {
   const [isBrowser, setIsBrowser] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setIsBrowser(true);
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  // Add this to handle iOS Safari 100vh issue
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Set CSS variable for viewport height
+      const setVH = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      };
+      
+      // Initial set
+      setVH();
+      
+      // Update on resize
+      window.addEventListener('resize', setVH);
+      return () => window.removeEventListener('resize', setVH);
+    }
   }, []);
 
   const handleSignIn = useCallback(async () => {
@@ -212,103 +242,162 @@ export default function Home() {
     }
   };
 
+  // Add this effect to prevent scrolling on mobile
+  useEffect(() => {
+    if (isMobile) {
+      // Prevent scrolling on the body when on mobile
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    } else {
+      // Reset styles when not on mobile
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    }
+    
+    return () => {
+      // Cleanup function to reset styles when component unmounts
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
+  }, [isMobile]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center inset-0 bg-[#040404] text-white cursor-crosshair" style={{ fontFamily: 'monospace' }} onClick={toggleVideo}>
+    <main 
+      className={`flex min-h-screen flex-col items-center inset-0 bg-[#040404] text-white cursor-crosshair ${isMobile ? 'overflow-hidden' : ''}`} 
+      style={{ 
+        fontFamily: 'monospace',
+        ...(isMobile && { 
+          height: 'calc(var(--vh, 1vh) * 100)', // Use CSS variable for more accurate height
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0,
+          overscrollBehavior: 'none' // Additional protection against scroll bounce
+        })
+      }} 
+      onClick={toggleVideo}
+    >
       
-      {/* Logo + Name Section */}
-      <div className="flex items-center gap-2 mb-4 absolute top-4 left-4 m-4 z-10">
-        {/* <Image
-          src="/logo.png"
-          alt="Fiddle Logo"
-          width={16}
-          height={16}
-        /> */}
-        <span className="text-xs font-semibold mix-blend-difference">FIDDLE | SOFTWARE SHOULD FEEL LIKE MAGIC</span>
-      </div>
+      {/* Desktop UI */}
+      {!isMobile && (
+        <>
+          {/* Logo + Name Section */}
+          <div className="flex items-center gap-2 mb-4 absolute top-4 left-4 m-4 z-10">
+            {/* <Image
+              src="/logo.png"
+              alt="Fiddle Logo"
+              width={16}
+              height={16}
+            /> */}
+            <span className="text-xs font-semibold mix-blend-difference">FIDDLE | SOFTWARE SHOULD FEEL LIKE MAGIC</span>
+          </div>
 
-      {/* Waitlist Section */}
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        <a 
-          href="https://discord.gg/fYUTpD86vu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 px-2 py-2 transition-colors"
-          onMouseEnter={() => setCursorText('[ Join Discord ]')}
-          onMouseLeave={() => setCursorText('[ play ]')}
-        >
-          <Image
-            src="/discord.svg"
-            alt="Discord"
-            width={20}
-            height={20}
-            className="mix-blend-difference text-white/70 hover:text-white "
-          />
-        </a>
-      </div>
+          {/* Waitlist Section */}
+          <div className="absolute top-4 right-4 z-10 flex gap-2">
+            <a 
+              href="https://discord.gg/fYUTpD86vu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-2 py-2 transition-colors"
+              onMouseEnter={() => setCursorText('[ Join Discord ]')}
+              onMouseLeave={() => setCursorText('[ play ]')}
+            >
+              <Image
+                src="/discord.svg"
+                alt="Discord"
+                width={20}
+                height={20}
+                className="mix-blend-difference text-white/70 hover:text-white "
+              />
+            </a>
+            <a 
+              href="https://twitter.com/fiddle_factory"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-2 py-2 transition-colors"
+              onMouseEnter={() => setCursorText('[ Join Twitter ]')}
+              onMouseLeave={() => setCursorText('[ play ]')}
+            >
+              <Image
+                src="/twitter.svg"
+                alt="Twitter"
+                width={20}
+                height={20}
+                className="mix-blend-difference text-white/70 hover:text-white "
+              />
+            </a>
+          </div>
 
-      {/* Timestamps Section */}
-      <div 
-        className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
-        onMouseEnter={() => {
-          setCursorText('');
-        }}
-        onMouseLeave={() => {
-          setCursorText('[ play ]');
-        }}
-        onClick={handleTimestampClick}
-      >
-        <div className="z-20 gap-0">
-          {/* orange Scrubber Line */}
+          {/* Timestamps Section */}
           <div 
-            className="absolute bg-[#FF3001] z-20"
-            style={{
-              left: `${scrubberPosition - 2}px`, 
-              height: '120%', 
-              width: '1px',
-              top: '-10%',
-              transition: 'left 0.05s ease-out'
+            className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
+            onMouseEnter={() => {
+              setCursorText('');
             }}
-          ></div>
-
-          {/* Triangle at the top of the Scrubber */}
-          <div 
-            className="absolute z-20"
-            style={{
-              left: `${scrubberPosition - 7}px`, 
-              top: '-12%',
-              width: 0,
-              height: 0,
-              borderLeft: '6px solid transparent',
-              borderRight: '6px solid transparent',
-              borderTop: '8px solid #FF3001',
-              transition: 'left 0.05s ease-out'
+            onMouseLeave={() => {
+              setCursorText('[ play ]');
             }}
-          ></div>
+            onClick={handleTimestampClick}
+          >
+            <div className="z-20 gap-0">
+              {/* orange Scrubber Line */}
+              <div 
+                className="absolute bg-[#FF3001] z-20"
+                style={{
+                  left: `${scrubberPosition - 2}px`, 
+                  height: '120%', 
+                  width: '1px',
+                  top: '-10%',
+                  transition: 'left 0.05s ease-out'
+                }}
+              ></div>
 
-          {/* Rectangle Above the Triangle */}
-          <div 
-            className="absolute z-20"
-            style={{
-              left: `${scrubberPosition - 7}px`, 
-              top: 'calc(-12% - 5px)', 
-              width: '12px', 
-              height: '5px', 
-              backgroundColor: '#FF3001',
-              transition: 'left 0.05s ease-out'
-            }}
-          ></div>
-        </div>
+              {/* Triangle at the top of the Scrubber */}
+              <div 
+                className="absolute z-20"
+                style={{
+                  left: `${scrubberPosition - 7}px`, 
+                  top: '-12%',
+                  width: 0,
+                  height: 0,
+                  borderLeft: '6px solid transparent',
+                  borderRight: '6px solid transparent',
+                  borderTop: '8px solid #FF3001',
+                  transition: 'left 0.05s ease-out'
+                }}
+              ></div>
 
-        <div className="flex justify-between w-full mb-2 z-10 items-center">
-          {timestamps.map((timestamp, index) => (
-        <span
-        key={index}
-        className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
-        >
-          {timestamp}
-        </span>
-          ))}
-          <div className="relative">
+              {/* Rectangle Above the Triangle */}
+              <div 
+                className="absolute z-20"
+                style={{
+                  left: `${scrubberPosition - 7}px`, 
+                  top: 'calc(-12% - 5px)', 
+                  width: '12px', 
+                  height: '5px', 
+                  backgroundColor: '#FF3001',
+                  transition: 'left 0.05s ease-out'
+                }}
+              ></div>
+            </div>
+
+      <div className="flex justify-between w-full mb-2 z-10 items-center">
+        {timestamps.map((timestamp, index) => (
+          <span
+            key={index}
+            className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
+          >
+            {timestamp}
+          </span>
+        ))}
+        <div className="relative">
           {!showInput ? (
             <button
               onClick={() => setShowInput(true)}
@@ -339,7 +428,11 @@ export default function Home() {
                 <span className='text-white/60 text-xs uppercase mix-blend-difference' style={{ fontFamily: 'monospace' }}>{waitlisted ? 'Added' : 'Login link sent'}</span>
               </div>
               <button
-                onClick={() => window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank')}
+                onClick={() => {
+                    const tweetUrl = "https://twitter.com/intent/tweet?text=Check%20out%20this%20amazing%20video%20from%20Fiddle!&url=[insert handle]";
+                    window.open(tweetUrl, '_blank');
+                  //   window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
+                }}
                 className="text-white hover:text-[#FF3001] transition-colors text-xs uppercase mix-blend-difference font-semibold"
               >
                 {waitlisted ? 'Jump Ahead ↵' : 'Open Gmail ↵'}
@@ -347,50 +440,121 @@ export default function Home() {
             </div>
           )}
         </div>
-        </div>
+      </div>
 
-        {/* Dotted Line Above Image Section */}
-        <div className="custom-divider"></div>
+            {/* Dotted Line Above Image Section */}
+            <div className="custom-divider"></div>
 
-        {/* Image Section */}
-        <div className="flex gap-4 z-10 py-2 w-full">
-          {imageUrls.map((src, index) => (
-            <div key={index} className="flex-1">
-              <Image
-                className="opacity-60 hover:opacity-100 w-full h-auto"
-                src={src}
-                alt={`Image ${index + 1}`}
-                width={60}
-                height={60}
-                layout="responsive"
-              />
+            {/* Image Section */}
+            <div className="flex gap-4 z-10 py-2 w-full">
+              {imageUrls.map((src, index) => (
+                <div key={index} className="flex-1">
+                  <Image
+                    className="opacity-60 hover:opacity-100 w-full h-auto"
+                    src={src}
+                    alt={`Image ${index + 1}`}
+                    width={60}
+                    height={60}
+                    layout="responsive"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Dotted Line Below Image Section */}
-        <div className="custom-divider"></div>
-      </div>
+            {/* Dotted Line Below Image Section */}
+            <div className="custom-divider"></div>
+          </div>
 
-      {/* [Play] Div */}
-      <div 
-        className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs mix-blend-difference"
-        style={{
-          left: cursorPosition.x + (isBrowser && cursorPosition.x > (typeof window !== 'undefined' ? window.innerWidth : 0) - 150 ? -150 : 10) + 'px',
-          top: cursorPosition.y + (isBrowser && cursorPosition.y > (typeof window !== 'undefined' ? window.innerHeight : 0) - 100 ? -100 : 10) + 'px',
-          pointerEvents: 'none',
-          opacity: isCursorVisible ? 1 : 0,
-          transition: 'opacity 0.3s ease'
-        }}
-      >
-        {cursorText}
-      </div>
+          {/* [Play] Div */}
+          <div 
+            className="absolute z-30 text-white px-1 py-1 rounded uppercase font-semibold text-xs mix-blend-difference"
+            style={{
+              left: cursorPosition.x + (isBrowser && cursorPosition.x > (typeof window !== 'undefined' ? window.innerWidth : 0) - 150 ? -150 : 10) + 'px',
+              top: cursorPosition.y + (isBrowser && cursorPosition.y > (typeof window !== 'undefined' ? window.innerHeight : 0) - 100 ? -100 : 10) + 'px',
+              pointerEvents: 'none',
+              opacity: isCursorVisible ? 1 : 0,
+              transition: 'opacity 0.3s ease'
+            }}
+          >
+            {cursorText}
+          </div>
+        </>
+      )}
 
-      {/* Video Section */}
+      {/* Mobile UI */}
+      {isMobile && (
+        <>
+          {/* White overlay */}
+          <div className="absolute inset-0 bg-white/5 z-10"></div>
+          
+          {/* Mobile logo */}
+          <div className="absolute top-4 left-4 right-0 z-20 flex">
+            <span className="text-sm font-bold text-white">FIDDLE</span>
+          </div>
+          
+          {/* Mobile waitlist button */}
+          <div className="fixed bottom-0 left-0 right-0 p-4 z-20">
+            {!emailSent ? 
+            // (!showInput ? (
+            //     <button
+            //       onClick={(e) => {
+            //         e.stopPropagation();
+            //         setShowInput(true);
+            //       }}
+            //       className="w-[calc(100%-32px)] py-4 bg-[#ff3101] text-white font-bold text-center"
+            //     >
+            //       JOIN WAITLIST
+            //     </button>
+            //   ) : 
+            (
+                <div className="w-[calc(100%-64px)] bg-black p-4 rounded-md">
+                  <input
+                    type="email"
+                    autoFocus
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="w-[calc(100%-64px)] px-4 py-3 mb-3 border border-gray-300 text-black"
+                    disabled={loading}
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSignIn();
+                    }}
+                    className="w-[calc(100%-64px)] py-3 bg-[#FF3001] text-white font-bold"
+                    disabled={loading}
+                  >
+                    {loading ? "SUBMITTING..." : "JOIN WAITLIST"}
+                  </button>
+                </div>
+              // )
+            ) : (
+              <div className="w-full bg-black p-4 rounded-md text-center">
+                <p className="text-white mb-3">
+                  {waitlisted ? "You've been added to our waitlist!" : "Login link sent!"}
+                </p>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const tweetUrl = "https://twitter.com/intent/tweet?text=Check%20out%20this%20amazing%20video%20from%20Fiddle!&url=[insert handle]";
+                    window.open(tweetUrl, '_blank');
+                  }}
+                  className="w-full py-3 bg-[#FF3001] text-white font-bold rounded-md"
+                >
+                  {waitlisted ? "JUMP AHEAD" : "OPEN GMAIL"}
+                </button>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Video Section - Common for both mobile and desktop */}
       <div className="w-screen h-screen z-0 absolute inset-0">
         <video 
           ref={videoRef}
-          className="w-screen h-screen rounded-lg shadow-lg absolute inset-0"
+          className={`inset-0 ${isMobile ? 'object-cover relative h-svh' : 'absolute w-screen h-screen'} rounded-lg shadow-lg`}
           autoPlay 
           loop 
           muted 
