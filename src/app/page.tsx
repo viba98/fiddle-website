@@ -537,7 +537,7 @@ export default function Home() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
+                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
                     window.open(tweetUrl, '_blank');
                   }}
                   className="w-full py-3 text-[#ff3101] font-bold rounded-md"
