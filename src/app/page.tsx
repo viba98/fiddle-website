@@ -16,11 +16,6 @@ const imageUrls = [
   '/fin.png',
 ];
 
-// const timestamps = Array.from({ length: 11 }, (_, index) => {
-//   const time = (index + 1) * 5; 
-//   return `00:${time}`;
-// });
-
 function logBanner(){
   console.log(`
 _____ _     _     _ _      
@@ -30,7 +25,7 @@ _____ _     _     _ _
 |  _| | | (_| | (_| | |  __/
 |_|   |_|\__,_|\__,_|_|\___|
 
-code is the best prototyping tool.
+software should feel like magic.
 
 twitter: https://twitter.com/fiddle_factory`);
 }
@@ -46,11 +41,7 @@ const timestamps = [
 ]
 
 async function addContactToLoops(email: string, firstName: string = '', lastName: string = '', source: string): Promise<void> {
-    const url = "https://app.loops.so/api/v1/contacts/create";
-    const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.VITE_LOOPS_API_AUTH_TOKEN}`
-    };
+    const url = "/api/addContact";
     const payload = {
         email: email,
         firstName: firstName,
@@ -62,7 +53,9 @@ async function addContactToLoops(email: string, firstName: string = '', lastName
     try {
         const response = await fetch(url, {
             method: "POST",
-            headers: headers,
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(payload),
         });
 
@@ -107,7 +100,7 @@ export default function Home() {
 
         // Assuming success, you can set the emailSent and waitlisted states
         setEmailSent(true);
-        setWaitlisted(false);
+        setWaitlisted(true);
         
     } catch (err) {
         console.error('Error adding contact to Loops:', err);
