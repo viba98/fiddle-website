@@ -493,7 +493,7 @@ export default function Home() {
           </div>
           
           {/* Mobile waitlist button */}
-          <div className={`fixed bottom-0 left-0 right-0 z-20 ${!showInput ? 'mix-blend-difference' : ''}`}>
+          <div className={`fixed left-0 right-0 z-20 ${!showInput ? 'mix-blend-difference bottom-0 ' : ' top-0'}`}>
             {!emailSent ? 
             (!showInput ? (
                 <button
