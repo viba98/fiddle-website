@@ -4,24 +4,16 @@ import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const imageUrls = [
+  '/img0.png',
   '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png',
-  '/img1.png'
+  '/img2.png',
+  '/img3.png',
+  '/img4.png',
+  '/img5.png',
+  '/img6.png',
+  '/img7.png',
+  '/img8.png',
+  '/fin.png',
 ];
 
 // const timestamps = Array.from({ length: 11 }, (_, index) => {
@@ -46,11 +38,11 @@ twitter: https://twitter.com/fiddle_factory`);
 logBanner();
 
 const timestamps = [
-  '00:00 | INFINITE CANVAS',
-  '00:05 | VIBE CODE',
-  '00:10 | VISUAL EDITS',
-  '00:15 | DESIGN SYSTEM',
-  '00:20 | COLLABORATE'
+  '00:00 | PROMPT',
+  '00:05 | INFINITE CANVAS',
+  '00:10 | BRAINSTORMING COPILOT',
+  '00:15 | visual editting',
+  '00:20 | dev mode'
 ]
 
 export default function Home() {
@@ -65,6 +57,7 @@ export default function Home() {
   const [isBrowser, setIsBrowser] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMouseOverTimestamps, setIsMouseOverTimestamps] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -157,14 +150,28 @@ export default function Home() {
     };
   }, []);
 
-  const handleMouseMoveScrubber: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const target = e.currentTarget as HTMLDivElement;
-    if (target) {
-      const rect = target.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      setScrubberPosition(offsetX);
+  // Update scrubber position based on video progress
+  useEffect(() => {
+    const updateScrubberPosition = () => {
+      if (videoRef.current) {
+        const currentTime = videoRef.current.currentTime;
+        const duration = videoRef.current.duration;
+        const newPosition = (currentTime / duration) * window.innerWidth; // Assuming full width for scrubber
+        setScrubberPosition(newPosition);
+      }
+    };
+
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.addEventListener('timeupdate', updateScrubberPosition);
     }
-  };
+
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('timeupdate', updateScrubberPosition);
+      }
+    };
+  }, []);
 
   const toggleVideo = useCallback(() => {
     if (videoRef.current) {
@@ -181,6 +188,17 @@ export default function Home() {
   useEffect(() => {
     setCursorText(isPlaying ? '[ pause ]' : '[ play ]');
   }, [isPlaying]);
+
+  const handleTimestampClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.currentTarget as HTMLDivElement;
+    const rect = target.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left; // Get the X position relative to the timestamp section
+    const newPosition = (offsetX / rect.width) * videoRef.current?.duration; // Calculate the new time based on the click position
+
+    if (videoRef.current) {
+      videoRef.current.currentTime = newPosition; // Update the video's current time
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center inset-0 bg-[#040404] text-white cursor-crosshair" style={{ fontFamily: 'monospace' }} onClick={toggleVideo}>
@@ -219,9 +237,15 @@ export default function Home() {
       {/* Timestamps Section */}
       <div 
         className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
-        onMouseMove={handleMouseMoveScrubber} 
-        onMouseEnter={() => setCursorText('')}
-onMouseLeave={() => setCursorText('[ play ]')}
+        onMouseEnter={() => {
+          setCursorText('');
+          setIsMouseOverTimestamps(true);
+        }}
+        onMouseLeave={() => {
+          setCursorText('[ play ]');
+          setIsMouseOverTimestamps(false);
+        }}
+        onClick={handleTimestampClick}
       >
         <div className="z-20 gap-0">
           {/* orange Scrubber Line */}
@@ -246,7 +270,7 @@ onMouseLeave={() => setCursorText('[ play ]')}
               height: 0,
               borderLeft: '6px solid transparent',
               borderRight: '6px solid transparent',
-              borderTop: '8px solid #FF3001' ,
+              borderTop: '8px solid #FF3001',
               transition: 'left 0.05s ease-out'
             }}
           ></div>
@@ -267,21 +291,18 @@ onMouseLeave={() => setCursorText('[ play ]')}
 
         <div className="flex justify-between w-full mb-2 z-10 items-center">
           {timestamps.map((timestamp, index) => (
-
-<button
-key={index}
-className="flex-1  text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
-
->
-<span>{timestamp}</span>
-</button>
+        <span
+        key={index}
+        className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
+        >
+          {timestamp}
+        </span>
           ))}
           <div className="relative">
           {!showInput ? (
             <button
               onClick={() => setShowInput(true)}
               className="button-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference"
-              
             >
               <span>JOIN WAITLIST</span>
             </button>
@@ -322,11 +343,11 @@ className="flex-1  text-white transition-colors text-xs font-semibold uppercase 
         <div className="custom-divider"></div>
 
         {/* Image Section */}
-        <div className="flex gap-2 z-10 py-4 w-full">
+        <div className="flex gap-4 z-10 py-2 w-full">
           {imageUrls.map((src, index) => (
             <div key={index} className="flex-1">
               <Image
-                className="opacity-70 hover:opacity-100 w-full h-auto"
+                className="opacity-60 hover:opacity-100 w-full h-auto"
                 src={src}
                 alt={`Image ${index + 1}`}
                 width={60}
@@ -367,7 +388,7 @@ className="flex-1  text-white transition-colors text-xs font-semibold uppercase 
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         >
-          <source src="/teaser-test.mp4" type="video/mp4" />
+          <source src="/teaser-done.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
