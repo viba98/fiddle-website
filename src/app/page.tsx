@@ -429,7 +429,7 @@ export default function Home() {
               </div>
               <button
                 onClick={() => {
-                    const tweetUrl = "https://twitter.com/intent/tweet?text=Check%20out%20this%20amazing%20video%20from%20Fiddle!&url=[insert handle]";
+                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
                     window.open(tweetUrl, '_blank');
                   //   window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
                 }}
