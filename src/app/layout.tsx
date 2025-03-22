@@ -36,7 +36,7 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${poppins.className} antialiased`}>
       <head>
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=YOUR_TRACKING_ID"
+          src="https://www.googletagmanager.com/gtag/js?id=G-1PHNXN8BZS"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
