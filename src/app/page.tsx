@@ -146,11 +146,7 @@ export default function Home() {
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        if (email && !loading && !emailSent) {
-          handleSignIn();
-        } else if (emailSent) {
-          window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
-        }
+          window.open('https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659', '_blank');
       }
     };
 
@@ -300,7 +296,7 @@ export default function Home() {
           </div>
 
           {/* Waitlist Section */}
-          <div className="absolute top-4 right-4 z-10 flex gap-2">
+          <div className="absolute top-4 right-4 z-10 flex gap-2 justify-center items-center">
             <a 
               href="https://discord.gg/fYUTpD86vu"
               target="_blank"
@@ -333,6 +329,49 @@ export default function Home() {
                 className="mix-blend-difference text-white/70 hover:text-white "
               />
             </a>
+            <div className="relative">
+          {!showInput ? (
+            <button
+              onClick={() => setShowInput(true)}
+              className="button-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference"
+            >
+              <span>JOIN WAITLIST</span>
+            </button>
+          ) : !emailSent ? (
+            <div className="flex gap-2">
+              <div className="relative w-full">
+                <input
+                  type="email"
+                  autoFocus
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter Email"
+                  className="w-full px-2 py-2 text-xs border border-neutral-800 bg-[#111111] text-white placeholder-gray-400 focus:border-[#FF3101] focus:ring-1 focus:ring-[#FF3101] outline-none transition-colors"
+                  disabled={loading}
+                />
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-sm">
+                  ↵
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between px-2 py-2 bg-[#1E1E20] border border-gray-700 shadow-sm gap-6 ">
+              <div className="flex items-center gap-2">
+                <span className='text-white/60 text-xs uppercase mix-blend-difference' style={{ fontFamily: 'monospace' }}>{waitlisted ? 'Added' : 'Login link sent'}</span>
+              </div>
+              <button
+                onClick={() => {
+                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
+                    window.open(tweetUrl, '_blank');
+                  //   window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
+                }}
+                className="text-white hover:text-[#FF3001] transition-colors text-xs uppercase mix-blend-difference font-semibold"
+              >
+                {waitlisted ? 'Jump Ahead ↵' : 'Open Gmail ↵'}
+              </button>
+            </div>
+          )}
+        </div>
           </div>
 
           {/* Timestamps Section */}
@@ -397,49 +436,7 @@ export default function Home() {
             {timestamp}
           </span>
         ))}
-        <div className="relative">
-          {!showInput ? (
-            <button
-              onClick={() => setShowInput(true)}
-              className="button-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference"
-            >
-              <span>JOIN WAITLIST</span>
-            </button>
-          ) : !emailSent ? (
-            <div className="flex gap-2">
-              <div className="relative w-full">
-                <input
-                  type="email"
-                  autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter Email"
-                  className="w-full px-2 py-2 text-xs border border-neutral-800 bg-[#111111] text-white placeholder-gray-400 focus:border-[#FF3101] focus:ring-1 focus:ring-[#FF3101] outline-none transition-colors"
-                  disabled={loading}
-                />
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-sm">
-                  ↵
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between px-2 py-2 bg-[#1E1E20] border border-gray-700 shadow-sm gap-6 ">
-              <div className="flex items-center gap-2">
-                <span className='text-white/60 text-xs uppercase mix-blend-difference' style={{ fontFamily: 'monospace' }}>{waitlisted ? 'Added' : 'Login link sent'}</span>
-              </div>
-              <button
-                onClick={() => {
-                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
-                    window.open(tweetUrl, '_blank');
-                  //   window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
-                }}
-                className="text-white hover:text-[#FF3001] transition-colors text-xs uppercase mix-blend-difference font-semibold"
-              >
-                {waitlisted ? 'Jump Ahead ↵' : 'Open Gmail ↵'}
-              </button>
-            </div>
-          )}
-        </div>
+        
       </div>
 
             {/* Dotted Line Above Image Section */}

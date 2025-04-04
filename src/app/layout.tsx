@@ -20,7 +20,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Fiddle - Code is the best design tool",
+  title: "Fiddle | Code is the best design tool",
   description: "So we built a better code editor.",
   icons: {
     icon: '/favicon.ico',
