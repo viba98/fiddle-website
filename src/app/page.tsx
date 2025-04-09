@@ -301,7 +301,7 @@ export default function Home() {
               href="https://discord.gg/fYUTpD86vu"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2 py-2 transition-colors"
+              className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair"
               onMouseEnter={() => setCursorText('[ Join Discord ]')}
               onMouseLeave={() => setCursorText('[ play ]')}
             >
@@ -317,7 +317,7 @@ export default function Home() {
               href="https://twitter.com/fiddle_factory"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2 py-2 transition-colors"
+              className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair"
               onMouseEnter={() => setCursorText('[ Join Twitter ]')}
               onMouseLeave={() => setCursorText('[ play ]')}
             >
@@ -326,14 +326,24 @@ export default function Home() {
                 alt="Twitter"
                 width={20}
                 height={20}
-                className="mix-blend-difference text-white/70 hover:text-white "
+                className="mix-blend-difference text-white/70 hover:text-white"
               />
             </a>
             <div className="relative">
+            <button
+              onClick={() => window.open('https://rapid-stream.notion.site/Founding-Engineer-1cb7b9f0449880d9841fdc12ed641b4e?pvs=4', '_blank')}
+              onMouseEnter={() => setCursorText('')}
+              onMouseLeave={() => setCursorText('[ play ]')}
+              className="white-l-shape text-[#fff] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
+            >
+              <span>HIRING</span>
+            </button>
           {!showInput ? (
             <button
               onClick={() => setShowInput(true)}
-              className="button-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference"
+              onMouseEnter={() => setCursorText('')}
+              onMouseLeave={() => setCursorText('[ play ]')}
+              className="red-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
             >
               <span>JOIN WAITLIST</span>
             </button>

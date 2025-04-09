@@ -42,7 +42,7 @@ html, body {
   transform: translateZ(0);
 }
 
-.button-l-shape {
+.red-l-shape {
   position: relative;
   display: inline-block; /* important for bounding box */
   padding: 8px 16px;
@@ -51,7 +51,7 @@ html, body {
 }
 
 /* -- Top-left corner -- */
-.button-l-shape::before {
+.red-l-shape::before {
   content: '';
   position: absolute;
   top: 0;
@@ -66,7 +66,7 @@ html, body {
 }
 
 /* -- Bottom-right corner -- */
-.button-l-shape::after {
+.red-l-shape::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -81,12 +81,12 @@ html, body {
 }
 
 /* -- Wrap the text in <span> so we can attach the other 2 corners -- */
-.button-l-shape span {
+.red-l-shape span {
   position: relative; /* So the pseudo-elements are positioned inside this span */
 }
 
 /* -- Top-right corner -- */
-.button-l-shape span::before {
+.red-l-shape span::before {
   content: '';
   position: absolute;
   top: -8px;
@@ -101,7 +101,7 @@ html, body {
 }
 
 /* -- Bottom-left corner -- */
-.button-l-shape span::after {
+.red-l-shape span::after {
   content: '';
   position: absolute;
   bottom: -8px;
@@ -116,33 +116,90 @@ html, body {
 }
 
 /* -- On hover, reveal all corners -- */
-.button-l-shape:hover::before,
-.button-l-shape:hover::after,
-.button-l-shape:hover span::before,
-.button-l-shape:hover span::after {
+.red-l-shape:hover::before,
+.red-l-shape:hover::after,
+.red-l-shape:hover span::before,
+.red-l-shape:hover span::after {
   opacity: 1;
 }
 
-/* New class for timestamps */
-.timestamp-l-shape {
+.white-l-shape {
   position: relative;
   display: inline-block; /* important for bounding box */
-  padding: 2px 4px; /* Adjust padding as needed */
+  padding: 8px 16px;
+
+  cursor: pointer;
 }
 
-/* Override the border color for timestamps */
-.timestamp-l-shape::before,
-.timestamp-l-shape::after,
-.timestamp-l-shape span::before,
-.timestamp-l-shape span::after {
-  border: 1px solid white; /* Change color to white for timestamps */
+/* -- Top-left corner -- */
+.white-l-shape::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #fff;
+  border-right: 0;
+  border-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* On hover, reveal all corners for timestamps */
-.timestamp-l-shape:hover::before,
-.timestamp-l-shape:hover::after,
-.timestamp-l-shape:hover span::before,
-.timestamp-l-shape:hover span::after {
+/* -- Bottom-right corner -- */
+.white-l-shape::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #fff;
+  border-left: 0;
+  border-top: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- Wrap the text in <span> so we can attach the other 2 corners -- */
+.white-l-shape span {
+  position: relative; /* So the pseudo-elements are positioned inside this span */
+}
+
+/* -- Top-right corner -- */
+.white-l-shape span::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -16px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #fff;
+  border-left: 0;
+  border-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- Bottom-left corner -- */
+.white-l-shape span::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: -16px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #fff;
+  border-right: 0;
+  border-top: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* -- On hover, reveal all corners -- */
+.white-l-shape:hover::before,
+.white-l-shape:hover::after,
+.white-l-shape:hover span::before,
+.white-l-shape:hover span::after {
   opacity: 1;
 }
-
