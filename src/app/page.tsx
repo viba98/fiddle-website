@@ -303,7 +303,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair"
               onMouseEnter={() => setCursorText('[ Join Discord ]')}
-              onMouseLeave={() => setCursorText('[ play ]')}
+              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
             >
               <Image
                 src="/discord.svg"
@@ -319,7 +319,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair"
               onMouseEnter={() => setCursorText('[ Join Twitter ]')}
-              onMouseLeave={() => setCursorText('[ play ]')}
+              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
             >
               <Image
                 src="/twitter.svg"
@@ -333,7 +333,7 @@ export default function Home() {
             <button
               onClick={() => window.open('https://rapid-stream.notion.site/Founding-Engineer-1cb7b9f0449880d9841fdc12ed641b4e?pvs=4', '_blank')}
               onMouseEnter={() => setCursorText('')}
-              onMouseLeave={() => setCursorText('[ play ]')}
+              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
               className="white-l-shape text-[#fff] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
             >
               <span>HIRING</span>
@@ -342,7 +342,7 @@ export default function Home() {
             <button
               onClick={() => setShowInput(true)}
               onMouseEnter={() => setCursorText('')}
-              onMouseLeave={() => setCursorText('[ play ]')}
+              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
               className="red-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
             >
               <span>JOIN WAITLIST</span>
@@ -391,7 +391,7 @@ export default function Home() {
               setCursorText('');
             }}
             onMouseLeave={() => {
-              setCursorText('[ play ]');
+              setCursorText(isPlaying ? '[ pause ]' : '[ play ]');
             }}
             onClick={handleTimestampClick}
           >
