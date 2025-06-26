@@ -25,7 +25,7 @@ _____ _     _     _ _
 |  _| | | (_| | (_| | |  __/
 |_|   |_|\__,_|\__,_|_|\___|
 
-software should feel like magic.
+software is art.
 
 twitter: https://twitter.com/fiddle_factory`);
 }
@@ -292,7 +292,7 @@ export default function Home() {
               width={16}
               height={16}
             /> */}
-            <span className="text-xs font-semibold mix-blend-difference">FIDDLE | SOFTWARE SHOULD FEEL LIKE MAGIC</span>
+            <span className="text-xs font-semibold mix-blend-difference">FIDDLE | SOFTWARE IS ART</span>
           </div>
 
           {/* Waitlist Section */}
