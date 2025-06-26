@@ -12,7 +12,7 @@ export async function addGitHubToken(accessToken: string): Promise<AuthResult> {
 
   const currentTime = new Date().toISOString();
 
-  const { data, error } = await supabase.from('github_tokens').upsert(
+  const { error } = await supabase.from('github_tokens').upsert(
     [
       {
         user_id: user?.id,

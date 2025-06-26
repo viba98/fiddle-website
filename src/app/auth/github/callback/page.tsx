@@ -68,8 +68,7 @@ function GitHubCallbackContent() {
         
         {status === 'success' && (
           <div>
-            <p className="text-green-500 mb-2">Success! GitHub connected.</p>
-            <p className="text-sm text-gray-400">Token saved to your account.</p>
+            <p className="text-green-500 mb-2">Success! Thank you for joining Fiddle</p>
             <button 
               onClick={() => window.location.href = '/github-access'}
               className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
