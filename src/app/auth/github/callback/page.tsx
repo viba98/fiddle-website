@@ -45,6 +45,7 @@ function GitHubCallbackContent() {
 
     const code = searchParams.get('code');
     const oauthError = searchParams.get('error');
+    const returnTo = searchParams.get('returnTo');
     
     if (oauthError) {
       setError(`OAuth Error: ${oauthError}`);
@@ -70,10 +71,16 @@ function GitHubCallbackContent() {
           <div>
             <p className="text-green-500 mb-2">Success! Thank you for joining Fiddle</p>
             <button 
-              onClick={() => window.location.href = '/github-access'}
+              onClick={() => {
+                if (returnTo === 'onboarding') {
+                  window.location.href = '/github-access?showOnboarding=true';
+                } else {
+                  window.location.href = '/github-access';
+                }
+              }}
               className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
             >
-              Back to GitHub Access
+              {returnTo === 'onboarding' ? 'Continue Onboarding' : 'Back to GitHub Access'}
             </button>
           </div>
         )}
@@ -83,10 +90,16 @@ function GitHubCallbackContent() {
             <p className="text-red-500">Error connecting GitHub.</p>
             {error && <p className="text-sm text-gray-400 mt-2">{error}</p>}
             <button 
-              onClick={() => window.location.href = '/github-access'}
+              onClick={() => {
+                if (returnTo === 'onboarding') {
+                  window.location.href = '/github-access?showOnboarding=true';
+                } else {
+                  window.location.href = '/github-access';
+                }
+              }}
               className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
             >
-              Back to GitHub Access
+              {returnTo === 'onboarding' ? 'Continue Onboarding' : 'Back to GitHub Access'}
             </button>
           </div>
         )}
