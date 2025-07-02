@@ -8,6 +8,7 @@ function GitHubCallbackContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState('processing');
   const [error, setError] = useState<string | null>(null);
+  const [returnTo, setReturnTo] = useState<string | null>(null);
 
   useEffect(() => {
     const handleGitHubAuth = async (code: string) => {
@@ -45,7 +46,9 @@ function GitHubCallbackContent() {
 
     const code = searchParams.get('code');
     const oauthError = searchParams.get('error');
-    const returnTo = searchParams.get('returnTo');
+    const returnToParam = searchParams.get('returnTo');
+    
+    setReturnTo(returnToParam);
     
     if (oauthError) {
       setError(`OAuth Error: ${oauthError}`);

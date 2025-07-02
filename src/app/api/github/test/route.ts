@@ -2,6 +2,76 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
 
+// Define interfaces for GitHub API responses
+interface GitHubUser {
+  id: number;
+  login: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+  [key: string]: unknown;
+}
+
+interface GitHubRepo {
+  name: string;
+  full_name: string;
+  private: boolean;
+  description: string | null;
+  language: string | null;
+  size: number;
+  owner: {
+    login: string;
+  };
+  default_branch: string;
+  [key: string]: unknown;
+}
+
+interface GitHubOrg {
+  login: string;
+  id: number;
+  [key: string]: unknown;
+}
+
+interface GitHubEmail {
+  email: string;
+  primary: boolean;
+  verified: boolean;
+  [key: string]: unknown;
+}
+
+interface GitHubRateLimit {
+  resources: {
+    core: {
+      limit: number;
+      remaining: number;
+      reset: number;
+    };
+  };
+  [key: string]: unknown;
+}
+
+interface GitHubFileItem {
+  name: string;
+  type: 'file' | 'dir';
+  path: string;
+  size: number;
+  [key: string]: unknown;
+}
+
+interface TestResults {
+  user?: GitHubUser | { error: string };
+  repositories?: Partial<GitHubRepo>[] | { error: string };
+  first_repo_details?: Partial<GitHubRepo>;
+  first_repo_file_tree?: GitHubFileItem[] | { error: string } | { type: string };
+  organizations?: GitHubOrg[] | { error: string };
+  first_org_repos?: {
+    org_name: string;
+    repos: Partial<GitHubRepo>[];
+  } | { error: string } | { message: string };
+  emails?: GitHubEmail[] | { error: string };
+  rate_limit?: GitHubRateLimit | { error: string };
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Get the authorization header from the request
@@ -33,7 +103,7 @@ export async function GET(request: NextRequest) {
     }
 
     const githubToken = tokenData.access_token;
-    const results: any = {};
+    const results: TestResults = {};
 
     // Test 1: Basic user info
     try {
@@ -45,7 +115,7 @@ export async function GET(request: NextRequest) {
       });
       
       if (userResponse.ok) {
-        results.user = await userResponse.json();
+        results.user = await userResponse.json() as GitHubUser;
       } else {
         results.user = { error: userResponse.statusText };
       }
@@ -63,8 +133,8 @@ export async function GET(request: NextRequest) {
       });
       
       if (reposResponse.ok) {
-        const repos = await reposResponse.json();
-        results.repositories = repos.map((repo: any) => ({
+        const repos = await reposResponse.json() as GitHubRepo[];
+        results.repositories = repos.map((repo: GitHubRepo) => ({
           name: repo.name,
           full_name: repo.full_name,
           private: repo.private,
@@ -107,7 +177,7 @@ export async function GET(request: NextRequest) {
       });
       
       if (orgsResponse.ok) {
-        const orgs = await orgsResponse.json();
+        const orgs = await orgsResponse.json() as GitHubOrg[];
         results.organizations = orgs;
 
         // Test 5: Get repos from first organization (if any)
@@ -124,10 +194,10 @@ export async function GET(request: NextRequest) {
           );
 
           if (orgReposResponse.ok) {
-            const orgRepos = await orgReposResponse.json();
+            const orgRepos = await orgReposResponse.json() as GitHubRepo[];
             results.first_org_repos = {
               org_name: firstOrg.login,
-              repos: orgRepos.map((repo: any) => ({
+              repos: orgRepos.map((repo: GitHubRepo) => ({
                 name: repo.name,
                 full_name: repo.full_name,
                 private: repo.private,
@@ -159,7 +229,7 @@ export async function GET(request: NextRequest) {
       });
       
       if (emailsResponse.ok) {
-        results.emails = await emailsResponse.json();
+        results.emails = await emailsResponse.json() as GitHubEmail[];
       } else {
         results.emails = { error: emailsResponse.statusText };
       }
@@ -177,7 +247,7 @@ export async function GET(request: NextRequest) {
       });
       
       if (rateLimitResponse.ok) {
-        results.rate_limit = await rateLimitResponse.json();
+        results.rate_limit = await rateLimitResponse.json() as GitHubRateLimit;
       } else {
         results.rate_limit = { error: rateLimitResponse.statusText };
       }
@@ -200,7 +270,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper function to get file tree (1 level deep)
-async function getFileTree(owner: string, repo: string, token: string, path: string = '', maxDepth: number = 1): Promise<any> {
+async function getFileTree(owner: string, repo: string, token: string, path: string = '', maxDepth: number = 1): Promise<GitHubFileItem[] | { error: string } | { type: string }> {
   if (maxDepth <= 0) return { type: 'max_depth_reached' };
 
   try {
@@ -219,13 +289,13 @@ async function getFileTree(owner: string, repo: string, token: string, path: str
       return { error: response.statusText };
     }
 
-    const contents = await response.json();
+    const contents = await response.json() as GitHubFileItem[];
     
     if (Array.isArray(contents)) {
-      const tree = [];
+      const tree: GitHubFileItem[] = [];
       
       for (const item of contents.slice(0, 10)) { // Limit to first 10 items
-        const treeItem: any = {
+        const treeItem: GitHubFileItem = {
           name: item.name,
           type: item.type,
           path: item.path,
@@ -233,7 +303,10 @@ async function getFileTree(owner: string, repo: string, token: string, path: str
         };
 
         if (item.type === 'dir' && maxDepth > 1) {
-          treeItem.children = await getFileTree(owner, repo, token, item.path, maxDepth - 1);
+          const children = await getFileTree(owner, repo, token, item.path, maxDepth - 1);
+          if (Array.isArray(children)) {
+            (treeItem as GitHubFileItem & { children: GitHubFileItem[] }).children = children;
+          }
         }
 
         tree.push(treeItem);
