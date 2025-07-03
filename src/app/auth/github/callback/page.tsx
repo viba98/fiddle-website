@@ -25,10 +25,18 @@ function GitHubCallbackContent() {
           throw new Error(tokenData.error);
         }
         
-        // 2. Save GitHub token to the authenticated user
+        // Save GitHub token to the authenticated user
         const result = await addGitHubToken(tokenData.access_token);
         if (result.success) {
           setStatus('success');
+          // Automatically redirect after a short delay
+          setTimeout(() => {
+            if (returnTo === 'onboarding') {
+              window.location.href = '/github-access?showOnboarding=true&step=final';
+            } else {
+              window.location.href = '/github-access';
+            }
+          }, 1000); // 1 second delay to show success briefly
         } else {
           throw new Error(result.message);
         }
@@ -37,6 +45,14 @@ function GitHubCallbackContent() {
         console.error('GitHub auth error:', error);
         setError(error instanceof Error ? error.message : 'Unknown error');
         setStatus('error');
+        // Auto-redirect on error too
+        setTimeout(() => {
+          if (returnTo === 'onboarding') {
+            window.location.href = '/github-access?showOnboarding=true&step=final';
+          } else {
+            window.location.href = '/github-access';
+          }
+        }, 2000); // 2 second delay on error
       }
     };
 
@@ -49,13 +65,29 @@ function GitHubCallbackContent() {
     if (oauthError) {
       setError(`OAuth Error: ${oauthError}`);
       setStatus('error');
+      // Auto-redirect on OAuth error
+      setTimeout(() => {
+        if (returnToParam === 'onboarding') {
+          window.location.href = '/github-access?showOnboarding=true&step=final';
+        } else {
+          window.location.href = '/github-access';
+        }
+      }, 2000);
     } else if (code) {
       handleGitHubAuth(code);
     } else {
       setError('No authorization code found');
       setStatus('error');
+      // Auto-redirect on missing code
+      setTimeout(() => {
+        if (returnToParam === 'onboarding') {
+          window.location.href = '/github-access?showOnboarding=true&step=final';
+        } else {
+          window.location.href = '/github-access';
+        }
+      }, 2000);
     }
-  }, [searchParams]);
+  }, [searchParams, returnTo]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -68,19 +100,8 @@ function GitHubCallbackContent() {
         
         {status === 'success' && (
           <div>
-            <p className="text-green-500 mb-2">Success! Thank you for joining Fiddle</p>
-            <button 
-              onClick={() => {
-                if (returnTo === 'onboarding') {
-                  window.location.href = '/github-access?showOnboarding=true';
-                } else {
-                  window.location.href = '/github-access';
-                }
-              }}
-              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-            >
-              {returnTo === 'onboarding' ? 'Continue Onboarding' : 'Back to GitHub Access'}
-            </button>
+            <p className="text-green-500 mb-2">Success! GitHub account connected.</p>
+            <p className="text-sm text-gray-500">Redirecting back to onboarding...</p>
           </div>
         )}
         
@@ -88,18 +109,7 @@ function GitHubCallbackContent() {
           <div>
             <p className="text-red-500">Error connecting GitHub.</p>
             {error && <p className="text-sm text-gray-400 mt-2">{error}</p>}
-            <button 
-              onClick={() => {
-                if (returnTo === 'onboarding') {
-                  window.location.href = '/github-access?showOnboarding=true';
-                } else {
-                  window.location.href = '/github-access';
-                }
-              }}
-              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-            >
-              {returnTo === 'onboarding' ? 'Continue Onboarding' : 'Back to GitHub Access'}
-            </button>
+            <p className="text-sm text-gray-500 mt-2">Redirecting back to onboarding...</p>
           </div>
         )}
       </div>

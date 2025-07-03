@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { OnboardingData } from '@/types/database';
 
 interface OnboardingStep {
@@ -58,10 +58,11 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialStep?: number;
 }
 
-export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
-  const [currentStep, setCurrentStep] = useState(0);
+export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: OnboardingModalProps) {
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [data, setData] = useState<OnboardingData>({
     email: '',
     teamSize: '',
@@ -70,6 +71,11 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     githubAccess: false
   });
   const [error, setError] = useState<string | null>(null);
+
+  // Update current step when initialStep prop changes
+  useEffect(() => {
+    setCurrentStep(initialStep);
+  }, [initialStep]);
 
   const currentStepData = ONBOARDING_STEPS[currentStep];
   const progress = ((currentStep + 1) / ONBOARDING_STEPS.length) * 100;
@@ -174,12 +180,6 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         <div className="p-6 border-b border-gray-800">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-white">{currentStepData.title}</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              ✕
-            </button>
           </div>
         </div>
 
