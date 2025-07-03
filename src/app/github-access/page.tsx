@@ -42,6 +42,12 @@ export default function GitHubAccess() {
   useEffect(() => {
     // Check if user is already authenticated
     const checkUser = async () => {
+      if (!supabase) {
+        console.error('Supabase client not initialized');
+        setLoading(false);
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
@@ -62,21 +68,23 @@ export default function GitHubAccess() {
     checkUser();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        setUser(session?.user ?? null);
+      });
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
-
-
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
   };
 
   const handleConnectGitHub = () => {
-    if (!user) {
+    if (!user || !supabase) {
       return;
     }
     
@@ -97,7 +105,7 @@ export default function GitHubAccess() {
   };
 
   const handleTestGitHubAccess = async () => {
-    if (!user) {
+    if (!user || !supabase) {
       return;
     }
 
@@ -133,8 +141,6 @@ export default function GitHubAccess() {
   const handleOnboardingClose = () => {
     setShowOnboarding(false);
   };
-
-
 
   if (loading) {
     return (
@@ -198,78 +204,21 @@ export default function GitHubAccess() {
             </div>
 
             {testResults && (
-              <div className="mt-6 text-left bg-gray-100 p-4 rounded">
-                <h3 className="font-bold mb-4">GitHub Access Test Results:</h3>
-                
-                {/* User Info */}
-                {testResults.tests?.user && (
-                  <div className="mb-4">
-                    <h4 className="font-semibold text-blue-600">👤 User Info:</h4>
-                    <p>Username: {testResults.tests.user.login}</p>
-                    <p>Name: {testResults.tests.user.name}</p>
-                    <p>Email: {testResults.tests.user.email}</p>
-                  </div>
-                )}
-
-                {/* Organizations */}
-                <div className="mb-4">
-                  <h4 className="font-semibold text-green-600">🏢 Organizations:</h4>
-                  {testResults.tests?.organizations && testResults.tests.organizations.length > 0 ? (
-                    <div>
-                      <p>Found {testResults.tests.organizations.length} organization(s):</p>
-                      <ul className="list-disc list-inside ml-4">
-                        {testResults.tests.organizations.map((org, index) => (
-                          <li key={index}>{org.login}</li>
-                        ))}
-                      </ul>
-                      
-                      {/* First Org Repos */}
-                      {testResults.tests?.first_org_repos?.repos && (
-                        <div className="mt-2">
-                          <p className="font-medium">Repos in {testResults.tests.first_org_repos.org_name}:</p>
-                          <ul className="list-disc list-inside ml-4">
-                            {testResults.tests.first_org_repos.repos.map((repo, index) => (
-                              <li key={index}>{repo.name} ({repo.private ? 'private' : 'public'})</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <p>No organizations found</p>
-                  )}
-                </div>
-
-                {/* First Repo File Tree */}
-                {testResults.tests?.first_repo_file_tree && (
-                  <div className="mb-4">
-                    <h4 className="font-semibold text-purple-600">📁 File Tree ({testResults.tests.first_repo_details?.name}):</h4>
-                    <div className="bg-white p-3 rounded border">
-                      <pre className="text-xs overflow-auto max-h-64">
-                        {JSON.stringify(testResults.tests.first_repo_file_tree, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                )}
-
-                {/* Raw Results (collapsible) */}
-                <details className="mt-4">
-                  <summary className="cursor-pointer font-medium text-gray-600">📋 Raw Results</summary>
-                  <pre className="text-xs overflow-auto max-h-64 mt-2 bg-white p-3 rounded border">
-                    {JSON.stringify(testResults, null, 2)}
-                  </pre>
-                </details>
+              <div className="mt-8 p-4 bg-gray-100 rounded">
+                <h3 className="font-semibold mb-2">Test Results:</h3>
+                <pre className="text-sm overflow-auto">
+                  {JSON.stringify(testResults, null, 2)}
+                </pre>
               </div>
             )}
           </div>
         )}
-      </div>
 
-      {/* Onboarding Modal */}
-      <OnboardingModal
-        isOpen={showOnboarding}
-        onClose={handleOnboardingClose}
-      />
+        <OnboardingModal 
+          isOpen={showOnboarding} 
+          onClose={handleOnboardingClose} 
+        />
+      </div>
     </div>
   );
 }

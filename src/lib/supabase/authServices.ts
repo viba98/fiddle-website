@@ -6,6 +6,12 @@ export interface AuthResult {
 }
 
 export async function addGitHubToken(accessToken: string): Promise<AuthResult> {
+  // Check if Supabase client is available
+  if (!supabase) {
+    console.error('Supabase client not initialized - missing environment variables');
+    return { success: false, message: 'Database configuration error' };
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

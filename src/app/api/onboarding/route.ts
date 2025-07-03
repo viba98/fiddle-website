@@ -5,8 +5,17 @@ import type { OnboardingData } from '@/types/database';
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Supabase clients are available
+    if (!supabase || !supabaseAdmin) {
+      console.error('Supabase clients not initialized - missing environment variables');
+      return NextResponse.json(
+        { error: 'Database configuration error' },
+        { status: 500 }
+      );
+    }
+
     const body: OnboardingData = await request.json();
-    const { email, teamSize, designerType, teamLocation, githubAccess } = body;
+    const { email, teamSize, designerType, teamLocation } = body;
 
     console.log('API: Saving onboarding data', { email, step: 'onboarding' });
 
@@ -94,30 +103,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Also add to Loops for email marketing (if you want to keep this)
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/addContact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          firstName: '',
-          lastName: '',
-          source: 'onboarding',
-          hasAccess: true,
-          // Add custom fields for Loops
-          customFields: {
-            teamSize,
-            designerType,
-            teamLocation,
-            githubAccessRequested: githubAccess
-          }
-        })
-      });
-    } catch (loopsError) {
-      console.error('Error adding to Loops:', loopsError);
-      // Don't fail the whole request if Loops fails
-    }
+    // Removed Loops (addContact) integration here
 
     return NextResponse.json({
       success: true,

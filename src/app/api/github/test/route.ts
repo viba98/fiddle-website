@@ -74,6 +74,15 @@ interface TestResults {
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Supabase client is available
+    if (!supabase) {
+      console.error('Supabase client not initialized - missing environment variables');
+      return NextResponse.json(
+        { error: 'Database configuration error' },
+        { status: 500 }
+      );
+    }
+
     // Get the authorization header from the request
     const authHeader = request.headers.get('authorization');
     
