@@ -8,6 +8,11 @@ export async function POST(request: NextRequest) {
     // Check if Supabase clients are available
     if (!supabase || !supabaseAdmin) {
       console.error('Supabase clients not initialized - missing environment variables');
+      console.error('Supabase client:', supabase ? 'Initialized' : 'NULL');
+      console.error('Supabase admin client:', supabaseAdmin ? 'Initialized' : 'NULL');
+      console.error('Environment check - NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Present' : 'Missing');
+      console.error('Environment check - NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Present' : 'Missing');
+      console.error('Environment check - SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing');
       return NextResponse.json(
         { error: 'Database configuration error' },
         { status: 500 }
