@@ -1,9 +1,6 @@
 export async function POST(request: Request) {
   try {
-    // Parse the request body
     const body = await request.json();
-
-    console.log('token', process.env.VITE_LOOPS_API_AUTH_TOKEN);
 
     // Make request to Loops API
     const response = await fetch('https://app.loops.so/api/v1/contacts/create', {

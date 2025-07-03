@@ -76,7 +76,6 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
 
   const saveOnboardingData = async (currentData: OnboardingData, stepName: string) => {
     try {
-      console.log(`Saving step: ${stepName}`, currentData);
       
       const response = await fetch('/api/onboarding', {
         method: 'POST',
@@ -86,9 +85,6 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         body: JSON.stringify(currentData),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
       if (!response.ok) {
         const errorData = await response.json();
         console.log('API Error Response:', errorData);
@@ -97,7 +93,6 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
 
       const result = await response.json();
       console.log('API Success Response:', result);
-      console.log(`Saved: ${stepName}`);
       return true;
     } catch (error) {
       console.error(`Save failed: ${stepName}`, error);

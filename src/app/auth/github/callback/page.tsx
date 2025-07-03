@@ -13,9 +13,6 @@ function GitHubCallbackContent() {
   useEffect(() => {
     const handleGitHubAuth = async (code: string) => {
       try {
-        console.log('GitHub Callback - Got code:', code);
-        
-        // 1. Exchange code for token
         const tokenResponse = await fetch('/api/github/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -23,7 +20,6 @@ function GitHubCallbackContent() {
         });
         
         const tokenData = await tokenResponse.json();
-        console.log('GitHub Callback - Token response:', tokenData);
         
         if (tokenData.error) {
           throw new Error(tokenData.error);
