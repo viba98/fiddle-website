@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: OnboardingData = await request.json();
-    const { email, teamSize, designerType, teamLocation } = body;
+    const { email, teamSize, designerType, teamLocation, techStack } = body;
 
     console.log('API: Saving onboarding data', { email, step: 'onboarding' });
 
@@ -84,6 +84,7 @@ export async function POST(request: NextRequest) {
           team_size: teamSize || '',
           designer_type: designerType || '',
           team_location: teamLocation || '',
+          tech_stack: techStack || '',
           onboarding_completed: true,
           created_at: currentTime,
           updated_at: currentTime,

@@ -125,13 +125,13 @@ const ErrorModalWrapper = () => {
           {/* Progress Bar */}
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-400 mb-2">
-              <span>Step 1 of 6</span>
-              <span>17%</span>
+              <span>Step 1 of 7</span>
+              <span>14%</span>
             </div>
             <div className="w-full bg-gray-800 rounded-full h-2">
               <div
                 className="bg-[#FF3001] h-2 rounded-full transition-all duration-300"
-                style={{ width: '17%' }}
+                style={{ width: '14%' }}
               />
             </div>
           </div>
@@ -179,8 +179,8 @@ const meta: Meta<typeof OnboardingModal> = {
       description: 'Callback when modal is closed'
     },
     initialStep: {
-      control: { type: 'number', min: 0, max: 5 },
-      description: 'Starting step index (0-5)'
+      control: { type: 'number', min: 0, max: 6 },
+      description: 'Starting step index (0-6)'
     }
   }
 };
@@ -235,8 +235,19 @@ export const TeamLocationStep: Story = {
   }
 };
 
-export const GitHubAccessStep: Story = {
+export const TechStackStep: Story = {
   render: () => <OnboardingModalWrapper initialStep={4} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tech stack selection step. User chooses their primary technology stack.'
+      }
+    }
+  }
+};
+
+export const GitHubAccessStep: Story = {
+  render: () => <OnboardingModalWrapper initialStep={5} />,
   parameters: {
     docs: {
       description: {
@@ -247,7 +258,7 @@ export const GitHubAccessStep: Story = {
 };
 
 export const FinalStep: Story = {
-  render: () => <OnboardingModalWrapper initialStep={5} />,
+  render: () => <OnboardingModalWrapper initialStep={6} />,
   parameters: {
     docs: {
       description: {

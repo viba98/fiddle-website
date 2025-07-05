@@ -42,6 +42,13 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     options: ['United States', 'Europe', 'Asia', 'Remote/Global', 'Other']
   },
   {
+    id: 'techStack',
+    title: 'Tech Stack',
+    question: 'What technologies do you primarily work with?',
+    type: 'select',
+    options: ['React/Next.js', 'Vue.js', 'Angular', 'Svelte', 'Vanilla JavaScript', 'Python/Django', 'Ruby on Rails', 'PHP/Laravel', 'Mobile (React Native/Flutter)', 'Other']
+  },
+  {
     id: 'githubAccess',
     title: 'GitHub Access',
     question: 'Would you like to connect your GitHub account for enhanced features?',
@@ -68,6 +75,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
     teamSize: '',
     designerType: '',
     teamLocation: '',
+    techStack: '',
     githubAccess: false
   });
   const [error, setError] = useState<string | null>(null);
@@ -162,6 +170,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
       case 'teamSize':
       case 'designerType':
       case 'teamLocation':
+      case 'techStack':
         return data[currentStepData.id as keyof OnboardingData] !== '';
       case 'githubAccess':
       case 'final':
