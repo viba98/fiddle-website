@@ -1,26 +1,36 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState, useEffect } from 'react';
 import OnboardingModal from '../components/OnboardingModal';
-import type { OnboardingData } from '@/types/database';
+
+// Type definitions
+interface ApiResponse {
+  success?: boolean;
+  error?: string;
+  message?: string;
+}
 
 // Mock API responses
-const mockApiResponses = {
+const mockApiResponses: Record<string, ApiResponse> = {
   success: { success: true, message: 'Data saved successfully' },
   error: { error: 'Failed to save data', message: 'Network error occurred' },
   validationError: { error: 'Invalid email format', message: 'Please enter a valid email address' }
 };
 
-// Mock fetch function
-const mockFetch = (response: any, delay: number = 500) => {
+// Mock fetch function that returns a proper Response object
+const mockFetch = (response: ApiResponse, delay: number = 500): Promise<Response> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({
-        ok: !response.error,
-        json: () => Promise.resolve(response)
+      const mockResponse = new Response(JSON.stringify(response), {
+        status: response.error ? 400 : 200,
+        statusText: response.error ? 'Bad Request' : 'OK',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      resolve(mockResponse);
     }, delay);
   });
-};
+};  
 
 // Wrapper component to handle modal state
 const OnboardingModalWrapper = ({ 
@@ -30,7 +40,7 @@ const OnboardingModalWrapper = ({
   showError = false 
 }: {
   initialStep?: number;
-  mockResponse?: any;
+  mockResponse?: ApiResponse;
   mockDelay?: number;
   showError?: boolean;
 }) => {
@@ -38,11 +48,13 @@ const OnboardingModalWrapper = ({
 
   // Override fetch for mocking
   if (typeof window !== 'undefined') {
-    (window as any).fetch = (url: string, options: any) => {
+    const originalFetch = window.fetch;
+    window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = typeof input === 'string' ? input : input.toString();
       if (url === '/api/onboarding') {
         return mockFetch(showError ? mockApiResponses.error : mockResponse, mockDelay);
       }
-      return fetch(url, options);
+      return originalFetch(input, init);
     };
   }
 
@@ -61,11 +73,17 @@ const ErrorModalWrapper = () => {
 
   // Override fetch to always return error
   if (typeof window !== 'undefined') {
-    (window as any).fetch = () => {
-      return Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve({ error: 'Network error occurred', message: 'Failed to connect to server' })
-      });
+    window.fetch = () => {
+      return Promise.resolve(new Response(JSON.stringify({ 
+        error: 'Network error occurred', 
+        message: 'Failed to connect to server' 
+      }), {
+        status: 500,
+        statusText: 'Internal Server Error',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }));
     };
   }
 
