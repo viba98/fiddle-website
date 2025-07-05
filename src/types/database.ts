@@ -3,6 +3,7 @@ export interface GitHubTokenRecord {
   id: string;
   user_id: string | null;
   access_token: string | null;
+  name: string | null;
   email: string | null;
   team_size: string | null;
   designer_type: string | null;
@@ -15,6 +16,7 @@ export interface GitHubTokenRecord {
 
 // Onboarding data interface
 export interface OnboardingData {
+  name: string;
   email: string;
   teamSize: string;
   designerType: string;

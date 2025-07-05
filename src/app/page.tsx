@@ -63,8 +63,7 @@ async function addContactToLoops(email: string, firstName: string = '', lastName
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const responseData = await response.json();
-        console.log("Contact added to Loops:", responseData);
+        await response.json();
     } catch (error) {
         console.error("Error adding contact to Loops:", error);
     }
@@ -122,19 +121,12 @@ export default function Home() {
   const handleSignIn = useCallback(async () => {
     try {
         setLoading(true);
-        
-        console.log('Adding contact with email:', email);
-        
-        // Call the addContactToLoops function instead of the sign-in fetch
         await addContactToLoops(email, '', '', 'www.fiddle.is');
-
-        // Assuming success, you can set the emailSent and waitlisted states
         setEmailSent(true);
         setWaitlisted(true);
         
     } catch (err) {
         console.error('Error adding contact to Loops:', err);
-        // On any error, show waitlist message
         setEmailSent(true);
         setWaitlisted(true);
     } finally {

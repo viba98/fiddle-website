@@ -7,18 +7,18 @@ interface OnboardingStep {
   id: string;
   title: string;
   question: string;
-  type: 'email' | 'select' | 'text' | 'github' | 'final';
+  type: 'email' | 'select' | 'text' | 'github' | 'final' | 'contact';
   options?: string[];
   placeholder?: string;
 }
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
   {
-    id: 'email',
+    id: 'contact',
     title: 'Contact Information',
-    question: 'What\'s your email address?',
-    type: 'email',
-    placeholder: 'Enter your email address'
+    question: 'What\'s your name and email?',
+    type: 'contact',
+    placeholder: 'Enter your full name and email'
   },
   {
     id: 'teamSize',
@@ -71,6 +71,7 @@ interface OnboardingModalProps {
 export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: OnboardingModalProps) {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [data, setData] = useState<OnboardingData>({
+    name: '',
     email: '',
     teamSize: '',
     designerType: '',
@@ -101,12 +102,10 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log('API Error Response:', errorData);
+        console.error('API Error Response:', errorData);
         throw new Error(errorData.error || errorData.message || 'Failed to save onboarding data');
       }
 
-      const result = await response.json();
-      console.log('API Success Response:', result);
       return true;
     } catch (error) {
       console.error(`Save failed: ${stepName}`, error);
@@ -120,6 +119,13 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
     
     if (currentStep < ONBOARDING_STEPS.length - 1) {
       const stepName = ONBOARDING_STEPS[currentStep].id;
+      
+      // Skip API call for GitHub access step since it doesn't need Loops update
+      if (stepName === 'githubAccess') {
+        setCurrentStep(currentStep + 1);
+        return;
+      }
+      
       const saveSuccess = await saveOnboardingData(data, stepName);
       
       if (saveSuccess) {
@@ -142,6 +148,9 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
   const handleSkip = () => {
     if (currentStepData.id === 'githubAccess') {
       setData(prev => ({ ...prev, githubAccess: false }));
+      // Skip API call for GitHub access step since it doesn't need Loops update
+      setCurrentStep(currentStep + 1);
+      return;
     }
     handleNext();
   };
@@ -152,6 +161,10 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
 
   const handleGitHubConnect = () => {
     setData(prev => ({ ...prev, githubAccess: true }));
+    
+    // Skip API call for GitHub access step since it doesn't need Loops update
+    // Just proceed to next step
+    setCurrentStep(currentStep + 1);
     
     // Start GitHub OAuth flow
     const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
@@ -165,8 +178,8 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
 
   const canProceed = () => {
     switch (currentStepData.id) {
-      case 'email':
-        return data.email && data.email.includes('@');
+      case 'contact':
+        return data.name && data.name.trim().length > 0 && data.email && data.email.includes('@');
       case 'teamSize':
       case 'designerType':
       case 'teamLocation':
@@ -200,6 +213,50 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
             <div className="mb-4 p-3 bg-red-900/20 border border-red-800 rounded text-red-400 text-sm">
               {error}
             </div>
+          )}
+
+          {currentStepData.type === 'contact' && (
+            <div className="space-y-3">
+              <input
+                type="text"
+                value={data.name}
+                onChange={(e) => setData(prev => ({ ...prev, name: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && canProceed()) {
+                    handleNext();
+                  }
+                }}
+                placeholder="Enter your full name"
+                className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
+              />
+              <input
+                type="email"
+                value={data.email}
+                onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && canProceed()) {
+                    handleNext();
+                  }
+                }}
+                placeholder="Enter your email address"
+                className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
+              />
+            </div>
+          )}
+
+          {currentStepData.type === 'text' && (
+            <input
+              type="text"
+              value={data.name}
+              onChange={(e) => handleInputChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && canProceed()) {
+                  handleNext();
+                }
+              }}
+              placeholder={currentStepData.placeholder}
+              className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
+            />
           )}
 
           {currentStepData.type === 'email' && (
