@@ -14,13 +14,6 @@ interface OnboardingStep {
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
   {
-    id: 'contact',
-    title: 'Contact Information',
-    question: 'What\'s your name and email?',
-    type: 'contact',
-    placeholder: 'Enter your full name and email'
-  },
-  {
     id: 'teamSize',
     title: 'Team Size',
     question: 'How huge is your team?',
@@ -80,6 +73,8 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
     githubAccess: false
   });
   const [error, setError] = useState<string | null>(null);
+  const [showContactForm, setShowContactForm] = useState(true);
+  const [showJumpAhead, setShowJumpAhead] = useState(false);
 
   // Update current step when initialStep prop changes
   useEffect(() => {
@@ -112,6 +107,27 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
       setError(error instanceof Error ? error.message : 'Unknown error');
       return false;
     }
+  };
+
+  const handleContactSubmit = async () => {
+    setError(null);
+    
+    if (!data.name || data.name.trim().length === 0 || !data.email || !data.email.includes('@')) {
+      setError('Please enter a valid name and email address');
+      return;
+    }
+
+    const saveSuccess = await saveOnboardingData(data, 'contact');
+    
+    if (saveSuccess) {
+      setShowContactForm(false);
+      setShowJumpAhead(true);
+    }
+  };
+
+  const handleJumpAhead = () => {
+    setShowJumpAhead(false);
+    setCurrentStep(0); // Start with the first step (teamSize)
   };
 
   const handleNext = async () => {
@@ -178,8 +194,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
 
   const canProceed = () => {
     switch (currentStepData.id) {
-      case 'contact':
-        return data.name && data.name.trim().length > 0 && data.email && data.email.includes('@');
       case 'teamSize':
       case 'designerType':
       case 'teamLocation':
@@ -194,6 +208,105 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
   };
 
   if (!isOpen) return null;
+
+  // Show contact form first
+  if (showContactForm) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#040404] border border-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="p-6 border-b border-gray-800">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-white">Contact Information</h2>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            <p className="text-lg mb-6 text-white">What&apos;s your name and email?</p>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-900/20 border border-red-800 rounded text-red-400 text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <input
+                type="text"
+                value={data.name}
+                onChange={(e) => setData(prev => ({ ...prev, name: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && data.name && data.email && data.email.includes('@')) {
+                    handleContactSubmit();
+                  }
+                }}
+                placeholder="Enter your full name"
+                className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
+              />
+              <input
+                type="email"
+                value={data.email}
+                onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && data.name && data.email && data.email.includes('@')) {
+                    handleContactSubmit();
+                  }
+                }}
+                placeholder="Enter your email address"
+                className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Footer with Submit Button */}
+          <div className="p-6 border-t border-gray-800">
+            <button
+              onClick={handleContactSubmit}
+              disabled={!data.name || !data.email || !data.email.includes('@')}
+              className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show jump ahead prompt
+  if (showJumpAhead) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#040404] border border-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="p-6 border-b border-gray-800">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-white">Welcome!</h2>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            <div className="text-center space-y-4">
+              <p className="text-lg text-white">Want to jump ahead in the line?</p>
+              <button
+                onClick={handleJumpAhead}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleJumpAhead();
+                  }
+                }}
+                className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
+              >
+                Yes! [enter↵]
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
@@ -212,35 +325,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
           {error && (
             <div className="mb-4 p-3 bg-red-900/20 border border-red-800 rounded text-red-400 text-sm">
               {error}
-            </div>
-          )}
-
-          {currentStepData.type === 'contact' && (
-            <div className="space-y-3">
-              <input
-                type="text"
-                value={data.name}
-                onChange={(e) => setData(prev => ({ ...prev, name: e.target.value }))}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && canProceed()) {
-                    handleNext();
-                  }
-                }}
-                placeholder="Enter your full name"
-                className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
-              />
-              <input
-                type="email"
-                value={data.email}
-                onChange={(e) => setData(prev => ({ ...prev, email: e.target.value }))}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && canProceed()) {
-                    handleNext();
-                  }
-                }}
-                placeholder="Enter your email address"
-                className="w-full p-3 border border-gray-700 bg-[#111111] text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-[#FF3001] focus:border-[#FF3001] outline-none transition-colors"
-              />
             </div>
           )}
 
