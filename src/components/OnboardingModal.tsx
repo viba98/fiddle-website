@@ -16,30 +16,30 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'teamSize',
     title: 'Team Size',
-    question: 'How huge is your team?',
+    question: 'How many designers are in your company?',
     type: 'select',
-    options: ['1-5 people', '6-10 people', '11-25 people', '26-50 people', '50+ people']
+    options: ['1-5 designers', '6-10 designers', '11-25 designers', '26-50 designers', '50+ designers']
   },
   {
     id: 'designerType',
     title: 'Design Role',
-    question: 'What kind of designer are you?',
+    question: 'What best describes your job?',
     type: 'select',
-    options: ['UI/UX Designer', 'Product Designer', 'Visual Designer', 'Interaction Designer', 'Design Systems Designer', 'Other']
+    options: ['Design Engineer', 'UX/Product Designer', 'Visual/Graphic Designer', 'Interaction Designer', 'Engineer', 'Founder', 'Student', 'Other']
   },
   {
     id: 'teamLocation',
     title: 'Team Location',
     question: 'Where is your team located?',
     type: 'select',
-    options: ['United States', 'Europe', 'Asia', 'Remote/Global', 'Other']
+    options: ['SF', 'NYC', 'US Other', 'Europe', 'Asia', 'Remote/Global', 'Other']
   },
   {
     id: 'techStack',
     title: 'Tech Stack',
-    question: 'What technologies do you primarily work with?',
+    question: 'What is your primary tech stack?',
     type: 'select',
-    options: ['React/Next.js', 'Vue.js', 'Angular', 'Svelte', 'Vanilla JavaScript', 'Python/Django', 'Ruby on Rails', 'PHP/Laravel', 'Mobile (React Native/Flutter)', 'Other']
+    options: ['React/Next.js', 'Svelte', 'Swift', 'Mobile (React Native/Flutter)', 'Other']
   },
   {
     id: 'githubAccess',
@@ -290,17 +290,18 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
           {/* Content */}
           <div className="flex-1 p-6 overflow-y-auto">
             <div className="text-center space-y-4">
-              <p className="text-lg text-white">Want to jump ahead in the line?</p>
-              <button
-                onClick={handleJumpAhead}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleJumpAhead();
-                  }
-                }}
-                className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
-              >
-                Yes! [enter↵]
+              <p className="text-lg text-white">Want faster access?</p>
+                              <button
+                  onClick={handleJumpAhead}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleJumpAhead();
+                    }
+                  }}
+                  tabIndex={0}
+                  className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
+                >
+                Jump Ahead
               </button>
             </div>
           </div>
@@ -400,13 +401,18 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
           )}
 
           {currentStepData.type === 'final' && (
-            <div className="text-center space-y-4">
+            <div 
+              className="text-center space-y-4"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleNext();
+                }
+              }}
+              tabIndex={0}
+            >
               <div className="text-6xl mb-4">🎉</div>
-              <p className="text-gray-300">
-                Welcome to Fiddle! We&apos;re excited to have you on board. You can now start exploring our platform and connecting with other designers.
-              </p>
               <p className="text-sm text-gray-500">
-                You can always update your preferences and connect your GitHub account later from your profile settings.
+                While you wait for access, we made a ball for you to fiddle with (get it?) on your mac!
               </p>
               <div className="pt-4">
                 <a
@@ -414,59 +420,52 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
                   download
                   className="inline-block px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
                 >
-                  Download Fiddle App
+                  Download Fiddle Ball
                 </a>
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer with Progress */}
-        <div className="p-6 border-t border-gray-800">
-          {/* Progress Bar */}
-          <div className="mb-4">
-            <div className="flex justify-between text-sm text-gray-400 mb-2">
-              <span>Step {currentStep + 1} of {ONBOARDING_STEPS.length}</span>
-              <span>{Math.round(progress)}%</span>
+        {/* Footer with Progress - Hidden on final step */}
+        {currentStepData.type !== 'final' && (
+          <div className="p-6 border-t border-gray-800">
+            {/* Progress Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-gray-400 mb-2">
+                <span>Step {currentStep + 1} of {ONBOARDING_STEPS.length}</span>
+                <span>{Math.round(progress)}%</span>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-2">
+                <div
+                  className="bg-[#FF3001] h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-gray-800 rounded-full h-2">
-              <div
-                className="bg-[#FF3001] h-2 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between">
+              <button
+                onClick={handleBack}
+                disabled={currentStep === 0}
+                className="px-4 py-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Back
+              </button>
+              
+              {currentStepData.type !== 'github' && (
+                <button
+                  onClick={handleNext}
+                  disabled={!canProceed()}
+                  className="px-6 py-2 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              )}
             </div>
           </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between">
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 0}
-              className="px-4 py-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Back
-            </button>
-            
-            {currentStepData.type !== 'github' && currentStepData.type !== 'final' && (
-              <button
-                onClick={handleNext}
-                disabled={!canProceed()}
-                className="px-6 py-2 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Next
-              </button>
-            )}
-
-            {currentStepData.type === 'final' && (
-              <button
-                onClick={handleNext}
-                className="px-6 py-2 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
-              >
-                Get Started
-              </button>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
