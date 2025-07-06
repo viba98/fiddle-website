@@ -6,10 +6,10 @@ import OnboardingModal from '@/components/OnboardingModal';
 
 // Import the onboarding steps from the modal component
 const ONBOARDING_STEPS = [
-  { id: 'email' },
   { id: 'teamSize' },
   { id: 'designerType' },
   { id: 'teamLocation' },
+  { id: 'techStack' },
   { id: 'githubAccess' },
   { id: 'final' }
 ];
@@ -17,6 +17,7 @@ const ONBOARDING_STEPS = [
 export default function GitHubAccess() {
   const [loading, setLoading] = useState(true);
   const [onboardingInitialStep, setOnboardingInitialStep] = useState(0);
+  const [skipContactForm, setSkipContactForm] = useState(false);
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -39,6 +40,7 @@ export default function GitHubAccess() {
         // Find the index of the final step
         const finalStepIndex = ONBOARDING_STEPS.findIndex(step => step.id === 'final');
         setOnboardingInitialStep(finalStepIndex >= 0 ? finalStepIndex : 0);
+        setSkipContactForm(true);
       }
     };
 
@@ -75,6 +77,7 @@ export default function GitHubAccess() {
         isOpen={true} 
         onClose={handleOnboardingClose} 
         initialStep={onboardingInitialStep}
+        skipContactForm={skipContactForm}
       />
     </div>
   );

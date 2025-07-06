@@ -59,9 +59,10 @@ interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialStep?: number;
+  skipContactForm?: boolean;
 }
 
-export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: OnboardingModalProps) {
+export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skipContactForm = false }: OnboardingModalProps) {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [data, setData] = useState<OnboardingData>({
     name: '',
@@ -73,7 +74,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
     githubAccess: false
   });
   const [error, setError] = useState<string | null>(null);
-  const [showContactForm, setShowContactForm] = useState(true);
+  const [showContactForm, setShowContactForm] = useState(!skipContactForm);
   const [showJumpAhead, setShowJumpAhead] = useState(false);
 
   // Update current step when initialStep prop changes
@@ -407,6 +408,15 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0 }: On
               <p className="text-sm text-gray-500">
                 You can always update your preferences and connect your GitHub account later from your profile settings.
               </p>
+              <div className="pt-4">
+                <a
+                  href="/ball.dmg"
+                  download
+                  className="inline-block px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
+                >
+                  Download Fiddle App
+                </a>
+              </div>
             </div>
           )}
         </div>
