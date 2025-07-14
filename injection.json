@@ -1,0 +1,47 @@
+[
+  {
+    "name": "ContactForm",
+    "description": "Initial contact form that collects name and email before proceeding to onboarding steps",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: false, initialStep: 0 } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "TeamSizeStep", 
+    "description": "Team size selection step - User chooses from predefined team size options",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: true, initialStep: 0, data: { name: 'Test User', email: 'test@example.com' } } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "DesignerTypeStep",
+    "description": "Designer type selection step - User identifies their role in the design process", 
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: true, initialStep: 1, data: { name: 'Test User', email: 'test@example.com', teamSize: '1-5 designers' } } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "TeamLocationStep",
+    "description": "Team location selection step - User specifies where their team is located",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: true, initialStep: 2, data: { name: 'Test User', email: 'test@example.com', teamSize: '1-5 designers', designerType: 'UX/Product Designer' } } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "TechStackStep", 
+    "description": "Tech stack selection step - User chooses their primary technology stack",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: true, initialStep: 3, data: { name: 'Test User', email: 'test@example.com', teamSize: '1-5 designers', designerType: 'UX/Product Designer', teamLocation: 'SF' } } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "GitHubAccessStep",
+    "description": "GitHub integration step - User can connect their GitHub account or skip this step",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: true, initialStep: 4, data: { name: 'Test User', email: 'test@example.com', teamSize: '1-5 designers', designerType: 'UX/Product Designer', teamLocation: 'SF', techStack: 'React/Next.js' } } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "FinalStep",
+    "description": "Final welcome step - Confirms successful onboarding completion", 
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: true, initialStep: 5, data: { name: 'Test User', email: 'test@example.com', teamSize: '1-5 designers', designerType: 'UX/Product Designer', teamLocation: 'SF', techStack: 'React/Next.js', githubAccess: true } } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "ErrorState",
+    "description": "Error handling state - Displays error message when API calls fail",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: false, initialStep: 0, error: 'Failed to save data - Network error occurred' } }); modal.dispatchEvent(event); } }"
+  },
+  {
+    "name": "ValidationErrorState", 
+    "description": "Validation error state - Shows form validation errors",
+    "script": "if (window.React) { const modal = document.querySelector('[data-onboarding-modal]'); if (modal) { const event = new CustomEvent('injectState', { detail: { isOpen: true, skipContactForm: false, initialStep: 0, error: 'Please enter a valid name and email address' } }); modal.dispatchEvent(event); } }"
+  }
+]
