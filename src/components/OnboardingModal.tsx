@@ -206,7 +206,7 @@ I'd like to try Fiddle for Design QA. That way I can submit design QA as PRs ins
 
 📋 What we need: GitHub repo access 
 
-Can you complete the flow for the private beta here -> https://fiddle.is/design-qa? Thanks! 🙏`;
+Can you complete the flow for the private beta here -> https://fiddle.is/? Thanks! 🙏`;
 
     try {
       await navigator.clipboard.writeText(message);
