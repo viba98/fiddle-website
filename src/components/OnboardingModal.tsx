@@ -22,17 +22,10 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     id: 'designerType',
-    title: 'Design Role',
+    title: 'Role',
     question: 'What is your role?',
     type: 'select',
     options: ['Design Engineer', 'Engineer', 'PM', 'Founder', 'Interaction Designer', 'Student', 'Other']
-  },
-  {
-    id: 'techStack',
-    title: 'Tech Stack',
-    question: 'What is your primary tech stack?',
-    type: 'select',
-    options: ['Not sure', 'React/Next.js', 'Svelte', 'Swift', 'Mobile (React Native/Flutter)', 'Other']
   },
   {
     id: 'githubAccess',
@@ -62,7 +55,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     email: '',
     teamSize: '',
     designerType: '',
-    techStack: '',
     githubAccess: false
   });
   const [error, setError] = useState<string | null>(null);
@@ -216,7 +208,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     switch (currentStepData.id) {
       case 'teamSize':
       case 'designerType':
-      case 'techStack':
         return data[currentStepData.id as keyof OnboardingData] !== '';
       case 'githubAccess':
       case 'final':
