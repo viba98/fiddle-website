@@ -16,16 +16,16 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'teamSize',
     title: 'Team Size',
-    question: 'How many designers are in your company?',
+    question: 'How many designers + engineers are in your company?',
     type: 'select',
-    options: ['1-5 designers', '6-10 designers', '11-25 designers', '26-50 designers', '50+ designers']
+    options: ['1-5', '6-10', '11-25', '26-50', '50+']
   },
   {
     id: 'designerType',
     title: 'Role',
     question: 'What is your role?',
     type: 'select',
-    options: ['Design Engineer', 'Engineer', 'PM', 'Founder', 'Interaction Designer', 'Student', 'Other']
+    options: ['UX/UI Designer', 'Engineer', 'PM', 'Founder', 'Interaction Designer', 'Other']
   },
   {
     id: 'githubAccess',
@@ -167,12 +167,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     }
   };
 
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
   const handleSkip = () => {
     if (currentStepData.id === 'githubAccess') {
       setData(prev => ({ ...prev, githubAccess: false }));
@@ -276,7 +270,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
               disabled={!data.name || !data.email || !data.email.includes('@')}
               className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Submit
+              Submit <span style={{ opacity: '0.6' }}>↵</span>
             </button>
           </div>
         </div>
@@ -300,17 +294,18 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
           <div className="flex-1 p-6 overflow-y-auto">
             <div className="text-center space-y-4">
               <p className="text-lg text-white">Want faster access?</p>
-                              <button
-                  onClick={handleJumpAhead}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleJumpAhead();
-                    }
-                  }}
-                  tabIndex={0}
-                  className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
-                >
-                Jump Ahead
+              <button
+                onClick={handleJumpAhead}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleJumpAhead();
+                  }
+                }}
+                tabIndex={0}
+                autoFocus
+                className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
+              >
+                Jump Ahead <span style={{ opacity: '0.6' }}>↵</span>
               </button>
             </div>
           </div>
@@ -344,9 +339,9 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
               type="text"
               value={data.name}
               onChange={(e) => handleInputChange(e.target.value)}
-              onKeyDown={(e) => {
+              onKeyDown={async (e) => {
                 if (e.key === 'Enter' && canProceed()) {
-                  handleNext();
+                  await handleNext();
                 }
               }}
               placeholder={currentStepData.placeholder}
@@ -359,9 +354,9 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
               type="email"
               value={data.email}
               onChange={(e) => handleInputChange(e.target.value)}
-              onKeyDown={(e) => {
+              onKeyDown={async (e) => {
                 if (e.key === 'Enter' && canProceed()) {
-                  handleNext();
+                  await handleNext();
                 }
               }}
               placeholder={currentStepData.placeholder}
@@ -374,7 +369,12 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
               {currentStepData.options.map((option) => (
                 <button
                   key={option}
-                  onClick={() => handleInputChange(option)}
+                  onClick={async () => {
+                    handleInputChange(option);
+                    setTimeout(async () => {
+                      await handleNext();
+                    }, 100); // slight delay to ensure state update
+                  }}
                   className={`w-full p-3 text-left border rounded-lg transition-colors ${
                     data[currentStepData.id as keyof OnboardingData] === option
                       ? 'border-[#FF3001] bg-[#FF3001]/10 text-[#FF3001]'
@@ -395,7 +395,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
               <div className="space-y-2">
                 <button
                   onClick={handleGitHubConnect}
-                  className="w-full bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-lg transition-colors"
+                  className="w-full bg-[#FF3001] hover:bg-[#FF3001]/70 text-white p-3 rounded-lg transition-colors"
                 >
                   Connect GitHub Account
                 </button>
@@ -418,6 +418,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
                 }
               }}
               tabIndex={0}
+              autoFocus
             >
               <div className="text-6xl mb-4">🎉</div>
               <p className="text-sm text-gray-500">
@@ -451,27 +452,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
                   style={{ width: `${progress}%` }}
                 />
               </div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between">
-              <button
-                onClick={handleBack}
-                disabled={currentStep === 0}
-                className="px-4 py-2 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Back
-              </button>
-              
-              {currentStepData.type !== 'github' && (
-                <button
-                  onClick={handleNext}
-                  disabled={!canProceed()}
-                  className="px-6 py-2 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Next
-                </button>
-              )}
             </div>
           </div>
         )}
