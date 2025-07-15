@@ -54,7 +54,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [waitlisted, setWaitlisted] = useState(false);
-  const [scrubberPosition, setScrubberPosition] = useState(0);
   const [showInput, setShowInput] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorText, setCursorText] = useState('[play]');
@@ -153,29 +152,6 @@ export default function Home() {
       if (typeof window !== 'undefined') {
         window.removeEventListener('mousemove', handleMouseMove);
         clearTimeout(timeoutId);
-      }
-    };
-  }, []);
-
-  // Update scrubber position based on video progress
-  useEffect(() => {
-    const updateScrubberPosition = () => {
-      if (videoRef.current) {
-        const currentTime = videoRef.current.currentTime;
-        const duration = videoRef.current.duration;
-        const newPosition = (currentTime / duration) * window.innerWidth; // Assuming full width for scrubber
-        setScrubberPosition(newPosition);
-      }
-    };
-
-    const videoElement = videoRef.current;
-    if (videoElement) {
-      videoElement.addEventListener('timeupdate', updateScrubberPosition);
-    }
-
-    return () => {
-      if (videoElement) {
-        videoElement.removeEventListener('timeupdate', updateScrubberPosition);
       }
     };
   }, []);
