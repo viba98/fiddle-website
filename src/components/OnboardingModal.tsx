@@ -33,12 +33,12 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     question: 'Connect Github Repo',
     type: 'github'
   },
-  // {
-  //   id: 'final',
-  //   title: 'Welcome!',
-  //   question: 'You\'re all set up!',
-  //   type: 'final'
-  // }
+  {
+    id: 'final',
+    title: `🎉 You're all set!`,
+    question: 'Thanks for signing up :)',
+    type: 'final'
+  }
 ];
 
 interface OnboardingModalProps {
@@ -455,7 +455,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
 
           {currentStepData.type === 'final' && (
             <div 
-              className="text-center space-y-4"
+              className="text-start space-y-4"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleNext();
@@ -464,11 +464,11 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
               tabIndex={0}
               autoFocus
             >
-              <div className="text-6xl mb-4">🎉</div>
+              {/* <div className="text-6xl mb-4">We'll email you soon with access!</div> */}
               <p className="text-sm text-gray-500">
-                While you wait for access, we made a ball for you to fiddle with (get it?) on your mac!
+              We'll email you soon with access!
               </p>
-              <div className="pt-4">
+              {/* <div className="pt-4">
                 <a
                   href="/ball.dmg"
                   download
@@ -476,7 +476,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
                 >
                   Download Fiddle Ball
                 </a>
-              </div>
+              </div> */}
             </div>
           )}
         </div>
