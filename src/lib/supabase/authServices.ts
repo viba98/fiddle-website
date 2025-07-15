@@ -34,7 +34,6 @@ export async function addGitHubToken(accessToken: string): Promise<AuthResult> {
         email: existingRecord?.email || null,
         team_size: existingRecord?.team_size || null,
         designer_type: existingRecord?.designer_type || null,
-        team_location: existingRecord?.team_location || null,
         onboarding_completed: existingRecord?.onboarding_completed || false,
         created_at: existingRecord?.created_at || currentTime,
         updated_at: currentTime,

@@ -15,8 +15,6 @@ async function updateLoopsContact(email: string, onboardingData: OnboardingData)
       // Add custom properties for onboarding data
       teamSize: onboardingData.teamSize || '',
       designerType: onboardingData.designerType || '',
-      teamLocation: onboardingData.teamLocation || '',
-      techStack: onboardingData.techStack || '',
       githubAccess: onboardingData.githubAccess || false
     };
 
@@ -73,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: OnboardingData = await request.json();
-    const { name, email, teamSize, designerType, teamLocation, techStack } = body;
+    const { name, email, teamSize, designerType } = body;
 
     // Only validate email as required (minimum for saving)
     if (!email) {
@@ -136,8 +134,6 @@ export async function POST(request: NextRequest) {
           email,
           team_size: teamSize || '',
           designer_type: designerType || '',
-          team_location: teamLocation || '',
-          tech_stack: techStack || '',
           onboarding_completed: true,
           created_at: currentTime,
           updated_at: currentTime,

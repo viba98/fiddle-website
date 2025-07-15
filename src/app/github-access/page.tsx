@@ -8,8 +8,6 @@ import OnboardingModal from '@/components/OnboardingModal';
 const ONBOARDING_STEPS = [
   { id: 'teamSize' },
   { id: 'designerType' },
-  { id: 'teamLocation' },
-  { id: 'techStack' },
   { id: 'githubAccess' },
   { id: 'final' }
 ];

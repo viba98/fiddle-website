@@ -1,21 +1,8 @@
 'use client';
 
 import Image from "next/image";
-import Hls from 'hls.js';
 import { useState, useEffect, useCallback, useRef } from "react";
-
-const imageUrls = [
-  '/img0.png',
-  '/img1.png',
-  '/img2.png',
-  '/img3.png',
-  '/img4.png',
-  '/img5.png',
-  '/img6.png',
-  '/img7.png',
-  '/img8.png',
-  '/fin.png',
-];
+import Hls from 'hls.js';
 
 function logBanner(){
   console.log(`
@@ -32,14 +19,6 @@ twitter: https://twitter.com/fiddle_factory`);
 }
 
 logBanner();
-
-const timestamps = [
-  '00:00 | PROMPT',
-  '00:05 | INFINITE CANVAS',
-  '00:10 | BRAINSTORMING COPILOT',
-  '00:15 | visual editting',
-  '00:20 | dev mode'
-]
 
 async function addContactToLoops(email: string, firstName: string = '', lastName: string = '', source: string): Promise<void> {
     const url = "/api/addContact";
@@ -217,20 +196,6 @@ export default function Home() {
     setCursorText(isPlaying ? '[ pause ]' : '[ play ]');
   }, [isPlaying]);
 
-  const handleTimestampClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.currentTarget as HTMLDivElement;
-    const rect = target.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left; // Get the X position relative to the timestamp section
-
-    // Check if videoRef.current and its duration are defined
-    if (videoRef.current && videoRef.current.duration) {
-        const newPosition = (offsetX / rect.width) * videoRef.current.duration; // Calculate the new time based on the click position
-        videoRef.current.currentTime = newPosition; // Update the video's current time
-    } else {
-        console.warn("Video duration is not available yet.");
-    }
-  };
-
   // Add this effect to prevent scrolling on mobile
   useEffect(() => {
     if (isMobile) {
@@ -256,7 +221,7 @@ export default function Home() {
     };
   }, [isMobile]);
 
-  const videoSrc = "https://vz-b083d267-5c4.b-cdn.net/4bbdfdd9-175a-40e6-b276-ee099bf9988f/playlist.m3u8";
+  const videoSrc = "https://vz-b083d267-5c4.b-cdn.net/6fbd8bed-c06a-41b3-a3e0-9472f8c3a9fe/playlist.m3u8";
 
   useEffect(() => {
     if (videoRef.current) {
@@ -340,14 +305,6 @@ export default function Home() {
               />
             </a>
             <div className="relative">
-            <button
-              onClick={() => window.open('https://rapid-stream.notion.site/Founding-Engineer-1cb7b9f0449880d9841fdc12ed641b4e?pvs=4', '_blank')}
-              onMouseEnter={() => setCursorText('')}
-              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
-              className="white-l-shape text-[#fff] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
-            >
-              <span>HIRING</span>
-            </button>
           {!showInput ? (
             <button
               onClick={() => setShowInput(true)}
@@ -355,7 +312,7 @@ export default function Home() {
               onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
               className="red-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
             >
-              <span>JOIN WAITLIST</span>
+              <span>JOIN private beta</span>
             </button>
           ) : !emailSent ? (
             <div className="flex gap-2">
@@ -394,93 +351,7 @@ export default function Home() {
         </div>
           </div>
 
-          {/* Timestamps Section */}
-          <div 
-            className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
-            onMouseEnter={() => {
-              setCursorText('');
-            }}
-            onMouseLeave={() => {
-              setCursorText(isPlaying ? '[ pause ]' : '[ play ]');
-            }}
-            onClick={handleTimestampClick}
-          >
-            <div className="z-20 gap-0">
-              {/* orange Scrubber Line */}
-              <div 
-                className="absolute bg-[#FF3001] z-20"
-                style={{
-                  left: `${scrubberPosition - 2}px`, 
-                  height: '120%', 
-                  width: '1px',
-                  top: '-10%',
-                  transition: 'left 0.05s ease-out'
-                }}
-              ></div>
-
-              {/* Triangle at the top of the Scrubber */}
-              <div 
-                className="absolute z-20"
-                style={{
-                  left: `${scrubberPosition - 7}px`, 
-                  top: '-12%',
-                  width: 0,
-                  height: 0,
-                  borderLeft: '6px solid transparent',
-                  borderRight: '6px solid transparent',
-                  borderTop: '8px solid #FF3001',
-                  transition: 'left 0.05s ease-out'
-                }}
-              ></div>
-
-              {/* Rectangle Above the Triangle */}
-              <div 
-                className="absolute z-20"
-                style={{
-                  left: `${scrubberPosition - 7}px`, 
-                  top: 'calc(-12% - 5px)', 
-                  width: '12px', 
-                  height: '5px', 
-                  backgroundColor: '#FF3001',
-                  transition: 'left 0.05s ease-out'
-                }}
-              ></div>
-            </div>
-
-      <div className="flex justify-between w-full mb-2 z-10 items-center">
-        {timestamps.map((timestamp, index) => (
-          <span
-            key={index}
-            className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
-          >
-            {timestamp}
-          </span>
-        ))}
-        
-      </div>
-
-            {/* Dotted Line Above Image Section */}
-            <div className="custom-divider"></div>
-
-            {/* Image Section */}
-            <div className="flex gap-4 z-10 py-2 w-full">
-              {imageUrls.map((src, index) => (
-                <div key={index} className="flex-1">
-                  <Image
-                    className="opacity-60 hover:opacity-100 w-full h-auto"
-                    src={src}
-                    alt={`Image ${index + 1}`}
-                    width={60}
-                    height={60}
-                    layout="responsive"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Dotted Line Below Image Section */}
-            <div className="custom-divider"></div>
-          </div>
+          
 
           {/* [Play] Div */}
           <div 
@@ -509,7 +380,7 @@ export default function Home() {
             <span className="text-sm font-bold text-white">FIDDLE</span>
           </div>
           
-          {/* Mobile waitlist button */}
+          {/* Mobile private beta button */}
           <div className={`fixed left-0 right-0 z-20 ${!showInput ? 'mix-blend-difference bottom-0 ' : ' top-0'}`}>
             {!emailSent ? 
             (!showInput ? (
@@ -520,7 +391,7 @@ export default function Home() {
                   }}
                   className="w-[calc(100%-32px)] p-8 bg-none text-white font-medium text-left text-6xl mix-blend-difference"
                 >
-                  JOIN WAITLIST →
+                  JOIN private beta →
                 </button>
               ) : 
             (
