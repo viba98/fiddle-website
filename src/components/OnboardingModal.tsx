@@ -169,16 +169,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     }
   };
 
-  const handleSkip = () => {
-    if (currentStepData.id === 'githubAccess') {
-      setData(prev => ({ ...prev, githubAccess: false }));
-      // Skip API call for GitHub access step since it doesn't need Loops update
-      setCurrentStep(currentStep + 1);
-      return;
-    }
-    handleNext();
-  };
-
   const handleInputChange = (value: string) => {
     setData(prev => ({ ...prev, [currentStepData.id]: value }));
   };
