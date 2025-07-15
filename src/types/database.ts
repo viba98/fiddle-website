@@ -7,7 +7,6 @@ export interface GitHubTokenRecord {
   email: string | null;
   team_size: string | null;
   designer_type: string | null;
-  team_location: string | null;
   tech_stack: string | null;
   onboarding_completed: boolean;
   created_at: string;
@@ -20,7 +19,6 @@ export interface OnboardingData {
   email: string;
   teamSize: string;
   designerType: string;
-  teamLocation: string;
   techStack: string;
   githubAccess: boolean;
 }

@@ -23,23 +23,16 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'designerType',
     title: 'Design Role',
-    question: 'What best describes your job?',
+    question: 'What is your role?',
     type: 'select',
-    options: ['Design Engineer', 'UX/Product Designer', 'Visual/Graphic Designer', 'Interaction Designer', 'Engineer', 'Founder', 'Student', 'Other']
-  },
-  {
-    id: 'teamLocation',
-    title: 'Team Location',
-    question: 'Where is your team located?',
-    type: 'select',
-    options: ['SF', 'NYC', 'US Other', 'Europe', 'Asia', 'Remote/Global', 'Other']
+    options: ['Design Engineer', 'Engineer', 'PM', 'Founder', 'Interaction Designer', 'Student', 'Other']
   },
   {
     id: 'techStack',
     title: 'Tech Stack',
     question: 'What is your primary tech stack?',
     type: 'select',
-    options: ['React/Next.js', 'Svelte', 'Swift', 'Mobile (React Native/Flutter)', 'Other']
+    options: ['Not sure', 'React/Next.js', 'Svelte', 'Swift', 'Mobile (React Native/Flutter)', 'Other']
   },
   {
     id: 'githubAccess',
@@ -69,7 +62,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     email: '',
     teamSize: '',
     designerType: '',
-    teamLocation: '',
     techStack: '',
     githubAccess: false
   });
@@ -81,6 +73,33 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   useEffect(() => {
     setCurrentStep(initialStep);
   }, [initialStep]);
+
+  // Listen for injectState events
+  useEffect(() => {
+    const handleInjectState = (event: CustomEvent) => {
+      const { isOpen, skipContactForm: skipContact, initialStep: step, data: injectedData, error: injectedError } = event.detail;
+      
+      if (isOpen) {
+        if (injectedData) {
+          setData(injectedData);
+        }
+        if (injectedError) {
+          setError(injectedError);
+        }
+        setShowContactForm(!skipContact);
+        setCurrentStep(step || 0);
+        setShowJumpAhead(false);
+      }
+    };
+
+    // Add event listener
+    document.addEventListener('injectState', handleInjectState as EventListener);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('injectState', handleInjectState as EventListener);
+    };
+  }, []);
 
   const currentStepData = ONBOARDING_STEPS[currentStep];
   const progress = ((currentStep + 1) / ONBOARDING_STEPS.length) * 100;
@@ -197,7 +216,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     switch (currentStepData.id) {
       case 'teamSize':
       case 'designerType':
-      case 'teamLocation':
       case 'techStack':
         return data[currentStepData.id as keyof OnboardingData] !== '';
       case 'githubAccess':
