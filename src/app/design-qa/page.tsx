@@ -50,11 +50,7 @@ async function addContactToLoops(email: string, firstName: string = '', lastName
 }
 
 export default function Home() {
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const [waitlisted, setWaitlisted] = useState(false);
-  const [showInput, setShowInput] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorText, setCursorText] = useState('[play]');
   const [isBrowser, setIsBrowser] = useState(false);
@@ -100,18 +96,14 @@ export default function Home() {
   const handleSignIn = useCallback(async () => {
     try {
         setLoading(true);
-        await addContactToLoops(email, '', '', 'www.fiddle.is');
-        setEmailSent(true);
-        setWaitlisted(true);
+        await addContactToLoops('', '', '', 'www.fiddle.is');
         
     } catch (err) {
         console.error('Error adding contact to Loops:', err);
-        setEmailSent(true);
-        setWaitlisted(true);
     } finally {
         setLoading(false);
     }
-}, [email]);
+}, []);
 
   // Global command+enter handler
   useEffect(() => {
@@ -129,7 +121,7 @@ export default function Home() {
         window.removeEventListener('keydown', handleGlobalKeyDown);
       }
     };
-  }, [email, loading, emailSent, waitlisted, handleSignIn]);
+  }, [loading, handleSignIn]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -281,50 +273,17 @@ export default function Home() {
               />
             </a>
             <div className="relative">
-          {!showInput ? (
             <button
-              onClick={() => setShowInput(true)}
+              onClick={() => {
+                window.location.href = '/github-access';
+              }}
               onMouseEnter={() => setCursorText('')}
               onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
               className="red-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
             >
-              <span>JOIN private beta</span>
+              <span>JOIN PRIVATE BETA</span>
             </button>
-          ) : !emailSent ? (
-            <div className="flex gap-2">
-              <div className="relative w-full">
-                <input
-                  type="email"
-                  autoFocus
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter Email"
-                  className="w-full px-2 py-2 text-xs border border-neutral-800 bg-[#111111] text-white placeholder-gray-400 focus:border-[#FF3101] focus:ring-1 focus:ring-[#FF3101] outline-none transition-colors"
-                  disabled={loading}
-                />
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white text-sm">
-                  ↵
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between px-2 py-2 bg-[#1E1E20] border border-gray-700 shadow-sm gap-6 ">
-              <div className="flex items-center gap-2">
-                <span className='text-white/60 text-xs uppercase mix-blend-difference' style={{ fontFamily: 'monospace' }}>{waitlisted ? 'Added' : 'Login link sent'}</span>
-              </div>
-              <button
-                onClick={() => {
-                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
-                    window.open(tweetUrl, '_blank');
-                  //   window.open(waitlisted ? 'https://forms.gle/9wjkDzamRSeHVPRw5' : 'https://mail.google.com', '_blank');
-                }}
-                className="text-white hover:text-[#FF3001] transition-colors text-xs uppercase mix-blend-difference font-semibold"
-              >
-                {waitlisted ? 'Jump Ahead ↵' : 'Open Gmail ↵'}
-              </button>
-            </div>
-          )}
-        </div>
+          </div>
           </div>
 
           
@@ -357,59 +316,15 @@ export default function Home() {
           </div>
           
           {/* Mobile private beta button */}
-          <div className={`fixed left-0 right-0 z-20 ${!showInput ? 'mix-blend-difference bottom-0 ' : ' top-0'}`}>
-            {!emailSent ? 
-            (!showInput ? (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowInput(true);
-                  }}
-                  className="w-[calc(100%-32px)] p-8 bg-none text-white font-medium text-left text-6xl mix-blend-difference"
-                >
-                  JOIN private beta →
-                </button>
-              ) : 
-            (
-                <div className="w-screen h-screen inset-0 bg-black rounded-md px-8 py-16">
-                  <input
-                    type="email"
-                    autoFocus
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full px-4 py-3 mb-3 border border-zinc-700 text-white bg-zinc-800 focus:ring-[#FF3001] focus:ring-1 focus:outline-none"
-                    disabled={loading}
-                  />
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSignIn();
-                    }}
-                    className="w-full py-3 text-[#ff3101] font-bold"
-                    disabled={loading}
-                  >
-                    {loading ? "SUBMITTING..." : "SUBMIT"}
-                  </button>
-                </div>
-              )
-            ) : (
-              <div className="w-full bg-black px-8 py-16 rounded-md text-center h-screen">
-                <p className="text-white mb-3">
-                  {waitlisted ? "You've been added to our waitlist!" : "Login link sent!"}
-                </p>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const tweetUrl = "https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659";
-                    window.open(tweetUrl, '_blank');
-                  }}
-                  className="w-full py-3 text-[#ff3101] font-bold rounded-md"
-                >
-                  {waitlisted ? "JUMP AHEAD" : "OPEN GMAIL"}
-                </button>
-              </div>
-            )}
+          <div className="fixed left-0 right-0 z-20 mix-blend-difference bottom-0 ">
+            <button
+              onClick={() => {
+                window.location.href = '/github-access';
+              }}
+              className="w-[calc(100%-32px)] p-8 bg-none text-white font-medium text-left text-6xl mix-blend-difference"
+            >
+              JOIN PRIVATE BETA →
+            </button>
           </div>
         </>
       )}
