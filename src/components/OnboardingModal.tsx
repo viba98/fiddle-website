@@ -33,12 +33,12 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     question: 'Connect Github Repo',
     type: 'github'
   },
-  {
-    id: 'final',
-    title: 'Welcome!',
-    question: 'You\'re all set up!',
-    type: 'final'
-  }
+  // {
+  //   id: 'final',
+  //   title: 'Welcome!',
+  //   question: 'You\'re all set up!',
+  //   type: 'final'
+  // }
 ];
 
 interface OnboardingModalProps {
