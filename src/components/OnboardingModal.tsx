@@ -35,7 +35,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     id: 'final',
-    title: `🎉 You're all set!`,
+    title: `🎉 You are all set!`,
     question: 'Thanks for signing up :)',
     type: 'final'
   }
@@ -61,6 +61,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   const [showContactForm, setShowContactForm] = useState(!skipContactForm);
   const [showJumpAhead, setShowJumpAhead] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [hasClickedCopy, setHasClickedCopy] = useState(false);
 
   // Update current step when initialStep prop changes
   useEffect(() => {
@@ -211,6 +212,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
     try {
       await navigator.clipboard.writeText(message);
       setCopiedToClipboard(true);
+      setHasClickedCopy(true);
       setTimeout(() => setCopiedToClipboard(false), 2000);
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
@@ -222,6 +224,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
       document.execCommand('copy');
       document.body.removeChild(textArea);
       setCopiedToClipboard(true);
+      setHasClickedCopy(true);
       setTimeout(() => setCopiedToClipboard(false), 2000);
     }
   };
@@ -443,12 +446,12 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
                   </div>
                 </div>
                 
-                <p
+                {/* <p
                   onClick={handleSkip}
-                  className="w-full text-gray-400 hover:text-white p-3 rounded-lg hover:border-gray-600 transition-colors cursor-pointer text-center"
+                  className="w-full text-gray-400 hover:text-white rounded-lg hover:border-gray-600 transition-colors cursor-pointer text-center"
                 >
                   Skip for now
-                </p>
+                </p> */}
               </div>
             </div>
           )}
@@ -466,7 +469,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
             >
               {/* <div className="text-6xl mb-4">We'll email you soon with access!</div> */}
               <p className="text-sm text-gray-500">
-              We'll email you soon with access!
+              We&apos;ll email you soon with access!
               </p>
               {/* <div className="pt-4">
                 <a
@@ -497,6 +500,18 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
                 />
               </div>
             </div>
+            
+            {/* Next button for GitHub step */}
+            {currentStepData.type === 'github' && hasClickedCopy && (
+              <div className="flex justify-end">
+                <button
+                  onClick={handleNext}
+                  className="w-fit px-6 py-2 text-white bg-[#ff3101] rounded-md hover:border-[#FF3001]/80 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
