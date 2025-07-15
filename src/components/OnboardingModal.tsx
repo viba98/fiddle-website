@@ -30,7 +30,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'githubAccess',
     title: 'GitHub Access',
-    question: 'Would you like to connect your GitHub account for enhanced features?',
+    question: 'Connect Github Repo',
     type: 'github'
   },
   {
@@ -60,6 +60,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   const [error, setError] = useState<string | null>(null);
   const [showContactForm, setShowContactForm] = useState(!skipContactForm);
   const [showJumpAhead, setShowJumpAhead] = useState(false);
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
 
   // Update current step when initialStep prop changes
   useEffect(() => {
@@ -196,6 +197,33 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
     
     window.location.href = githubAuthUrl;
+  };
+
+  const handleCopyRequestMessage = async () => {
+    const message = `Hey!
+
+I'd like to try Fiddle for Design QA. That way I can submit design QA as PRs instead of Jira tickets. We won't waste hours of Engineering time on small visual bugs!
+
+📋 What we need: GitHub repo access 
+
+Can you complete the flow for the private beta here -> https://fiddle.is/design-qa? Thanks! 🙏`;
+
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopiedToClipboard(true);
+      setTimeout(() => setCopiedToClipboard(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = message;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopiedToClipboard(true);
+      setTimeout(() => setCopiedToClipboard(false), 2000);
+    }
   };
 
   const canProceed = () => {
@@ -389,22 +417,38 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
 
           {currentStepData.type === 'github' && (
             <div className="space-y-4">
-              <p className="text-sm text-gray-400">
-                Connecting your GitHub account will allow us to provide personalized recommendations and access to your repositories.
-              </p>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <button
                   onClick={handleGitHubConnect}
                   className="w-full bg-[#FF3001] hover:bg-[#FF3001]/70 text-white p-3 rounded-lg transition-colors"
                 >
                   Connect GitHub Account
                 </button>
-                <button
+                
+                <div className="relative">
+                  <div className="relative p-4 rounded-lg">
+                    <p className="text-sm text-gray-300 mb-3">
+                      Don&apos;t have GitHub access? Request it from your team:
+                    </p>
+                    <button
+                      onClick={handleCopyRequestMessage}
+                      className={`w-full p-3 rounded-lg transition-colors ${
+                        copiedToClipboard 
+                          ? 'bg-green-600 text-white' 
+                          : 'bg-gray-700 hover:bg-gray-600 text-white'
+                      }`}
+                    >
+                      {copiedToClipboard ? '✓ Copied to clipboard!' : '📋 Copy request message'}
+                    </button>
+                  </div>
+                </div>
+                
+                <p
                   onClick={handleSkip}
-                  className="w-full text-gray-400 hover:text-white p-3 rounded-lg border border-gray-700 hover:border-gray-600 bg-[#111111] hover:bg-[#1a1a1a] transition-colors"
+                  className="w-full text-gray-400 hover:text-white p-3 rounded-lg hover:border-gray-600 transition-colors cursor-pointer text-center"
                 >
                   Skip for now
-                </button>
+                </p>
               </div>
             </div>
           )}
