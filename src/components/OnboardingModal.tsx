@@ -191,7 +191,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
     // Start GitHub OAuth flow
     const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = `${window.location.origin}/auth/github/callback?returnTo=onboarding`;
-    const scope = 'repo user';
+    const scope = 'repo read:org read:project user';
     
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
     

@@ -32,9 +32,9 @@ function GitHubCallbackContent() {
           // Automatically redirect after a short delay
           setTimeout(() => {
             if (returnTo === 'onboarding') {
-              window.location.href = '/github-access?showOnboarding=true&step=final';
+              window.location.href = '/?onboarding=true';
             } else {
-              window.location.href = '/github-access';
+              window.location.href = '/';
             }
           }, 1000); // 1 second delay to show success briefly
         } else {
@@ -48,9 +48,9 @@ function GitHubCallbackContent() {
         // Auto-redirect on error too
         setTimeout(() => {
           if (returnTo === 'onboarding') {
-            window.location.href = '/github-access?showOnboarding=true&step=final';
+            window.location.href = '/?onboarding=true';
           } else {
-            window.location.href = '/github-access';
+            window.location.href = '/';
           }
         }, 2000); // 2 second delay on error
       }
@@ -68,9 +68,9 @@ function GitHubCallbackContent() {
       // Auto-redirect on OAuth error
       setTimeout(() => {
         if (returnToParam === 'onboarding') {
-          window.location.href = '/github-access?showOnboarding=true&step=final';
+          window.location.href = '/?onboarding=true';
         } else {
-          window.location.href = '/github-access';
+          window.location.href = '/';
         }
       }, 2000);
     } else if (code) {
@@ -81,9 +81,9 @@ function GitHubCallbackContent() {
       // Auto-redirect on missing code
       setTimeout(() => {
         if (returnToParam === 'onboarding') {
-          window.location.href = '/github-access?showOnboarding=true&step=final';
+          window.location.href = '/?onboarding=true';
         } else {
-          window.location.href = '/github-access';
+          window.location.href = '/';
         }
       }, 2000);
     }
