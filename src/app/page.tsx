@@ -44,6 +44,12 @@ export default function Home() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
+    // Check URL parameters for onboarding trigger
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('onboarding') === 'true') {
+      setShowOnboardingModal(true);
+    }
+    
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
