@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { OnboardingData } from '@/types/database';
 
 interface OnboardingStep {
@@ -62,11 +62,19 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   const [showJumpAhead, setShowJumpAhead] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [hasClickedCopy, setHasClickedCopy] = useState(false);
+  const jumpAheadButtonRef = useRef<HTMLButtonElement>(null);
 
   // Update current step when initialStep prop changes
   useEffect(() => {
     setCurrentStep(initialStep);
   }, [initialStep]);
+
+  // Focus jump ahead button when it appears
+  useEffect(() => {
+    if (showJumpAhead && jumpAheadButtonRef.current) {
+      jumpAheadButtonRef.current.focus();
+    }
+  }, [showJumpAhead]);
 
   // Listen for injectState events
   useEffect(() => {
@@ -302,8 +310,8 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
   // Show jump ahead prompt
   if (showJumpAhead) {
     return (
-      <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-[#040404] border border-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+        <div className="bg-[#040404] border border-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="p-6 border-b border-gray-800">
             <div className="flex items-center justify-between">
@@ -316,6 +324,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
             <div className="text-center space-y-4">
               <p className="text-lg text-white">Want faster access?</p>
               <button
+                ref={jumpAheadButtonRef}
                 onClick={handleJumpAhead}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -336,8 +345,8 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
   }
 
   return (
-    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[#040404] border border-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-[#040404] border border-gray-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="p-6 border-b border-gray-800">
           <div className="flex items-center justify-between">
