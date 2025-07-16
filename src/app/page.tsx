@@ -270,21 +270,39 @@ export default function Home() {
               </p>
               
               {/* Join Private Beta Button */}
-              <button
-                onClick={() => {
-                  setShowOnboardingModal(true);
-                }}
-                className="text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
-              >
-                <span>JOIN PRIVATE BETA</span>
-              </button>
+              <div className="flex flex-start gap-4">
+                <a 
+                      href="https://twitter.com/fiddle_factory"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair opacity-70 hover:opacity-100"
+                      onMouseEnter={() => setCursorText('[ Join Twitter ]')}
+                      onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
+                    >
+                      <Image
+                        src="/twitter.svg"
+                        alt="Twitter"
+                        width={20}
+                        height={20}
+                        className="mix-blend-difference text-white/70 hover:text-white"
+                      />
+                    </a>
+                <button
+                  onClick={() => {
+                    setShowOnboardingModal(true);
+                  }}
+                  className="text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
+                >
+                  <span>JOIN PRIVATE BETA</span>
+                </button>
+              </div>
             </div>
 
             {/* Video Section - Bottom */}
-            <div className="flex-1 relative">
+            <div className="flex-1 relative flex items-center justify-center">
               <video 
                 ref={videoRef}
-                className="w-full h-full object-cover rounded-lg shadow-lg"
+                className="w-full max-h-full object-contain rounded-lg shadow-lg"
                 autoPlay 
                 loop 
                 muted 
