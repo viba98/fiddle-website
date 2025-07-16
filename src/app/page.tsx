@@ -191,8 +191,8 @@ export default function Home() {
                     playsInline
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
+                    src={videoSrc}
                   >
-                    {/* HLS source is attached via hls.js or directly for Safari */}
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -259,24 +259,43 @@ export default function Home() {
       {/* Mobile UI */}
       {isMobile && (
         <>
-          {/* White overlay */}
-          <div className="absolute inset-0 bg-white/5 z-10"></div>
-          
-          {/* Mobile logo */}
-          <div className="absolute top-4 left-4 right-0 z-20 flex mix-blend-difference">
-            <span className="text-sm font-bold text-white">FIDDLE</span>
-          </div>
-          
-          {/* Mobile private beta button */}
-          <div className="fixed left-0 right-0 z-20 mix-blend-difference bottom-0 ">
-            <button
-              onClick={() => {
-                window.location.href = '/github-access';
-              }}
-              className="w-[calc(100%-32px)] p-8 bg-none text-white font-medium text-left text-6xl mix-blend-difference"
-            >
-              JOIN PRIVATE BETA →
-            </button>
+          {/* Mobile Content Layout */}
+          <div className="flex flex-col w-full h-full px-4 pt-16 pb-20">
+            {/* Text Section - Top */}
+            <div className="flex-1 flex flex-col justify-center mb-6">
+              <p className="text-xs font-semibold mix-blend-difference mb-2">FIDDLE | SOFTWARE IS ART</p>
+              <h1 className="text-2xl font-bold mb-4">Submit design QA as PRs, not Jira tickets</h1>
+              <p className="text-sm text-gray-300 leading-relaxed mb-6">
+                Fix visual bugs faster without wasting hours of engineering time on back-and-forth.
+              </p>
+              
+              {/* Join Private Beta Button */}
+              <button
+                onClick={() => {
+                  setShowOnboardingModal(true);
+                }}
+                className="text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
+              >
+                <span>JOIN PRIVATE BETA</span>
+              </button>
+            </div>
+
+            {/* Video Section - Bottom */}
+            <div className="flex-1 relative">
+              <video 
+                ref={videoRef}
+                className="w-full h-full object-cover rounded-lg shadow-lg"
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                src={videoSrc}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
           </div>
         </>
       )}
