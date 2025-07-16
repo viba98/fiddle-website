@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Hls from 'hls.js';
+import OnboardingModal from '@/components/OnboardingModal';
 
 function logBanner(){
   console.log(`
@@ -20,43 +21,16 @@ twitter: https://twitter.com/fiddle_factory`);
 
 logBanner();
 
-async function addContactToLoops(email: string, firstName: string = '', lastName: string = '', source: string): Promise<void> {
-    const url = "/api/addContact";
-    const payload = {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        source: source,
-        hasAccess: false
-    };
 
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        await response.json();
-    } catch (error) {
-        console.error("Error adding contact to Loops:", error);
-    }
-}
 
 export default function Home() {
-  const [loading, setLoading] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorText, setCursorText] = useState('[play]');
   const [isBrowser, setIsBrowser] = useState(false);
   const [isCursorVisible, setIsCursorVisible] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -93,35 +67,9 @@ export default function Home() {
     }
   }, []);
 
-  const handleSignIn = useCallback(async () => {
-    try {
-        setLoading(true);
-        await addContactToLoops('', '', '', 'www.fiddle.is');
-        
-    } catch (err) {
-        console.error('Error adding contact to Loops:', err);
-    } finally {
-        setLoading(false);
-    }
-}, []);
 
-  // Global command+enter handler
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-          window.open('https://twitter.com/intent/tweet?text=code%20is%20the%20best%20prototyping%20tool%0A&url=https://x.com/vibamohan_/status/1901649962938818659', '_blank');
-      }
-    };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', handleGlobalKeyDown);
-    }
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('keydown', handleGlobalKeyDown);
-      }
-    };
-  }, [loading, handleSignIn]);
+
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -278,7 +226,7 @@ export default function Home() {
                   </a>
                     <button
                       onClick={() => {
-                        window.location.href = '/github-access';
+                        setShowOnboardingModal(true);
                       }}
                       onMouseEnter={() => setCursorText('')}
                       onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
@@ -333,6 +281,15 @@ export default function Home() {
         </>
       )}
 
+      {/* Modal */}
+      {showOnboardingModal && (
+        <OnboardingModal 
+          isOpen={showOnboardingModal} 
+          onClose={() => setShowOnboardingModal(false)} 
+          initialStep={0}
+          skipContactForm={false}
+        />
+      )}
 
     </main>
   );
