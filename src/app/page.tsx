@@ -227,66 +227,70 @@ export default function Home() {
       {/* Desktop UI */}
       {!isMobile && (
         <>
-          {/* Logo + Name Section */}
-          <div className="flex items-center gap-2 mb-4 absolute top-4 left-4 m-4 z-10">
-            {/* <Image
-              src="/logo.png"
-              alt="Fiddle Logo"
-              width={16}
-              height={16}
-            /> */}
-            <span className="text-xs font-semibold mix-blend-difference">FIDDLE | SOFTWARE IS ART</span>
-          </div>
 
-          {/* Waitlist Section */}
-          <div className="absolute top-4 right-4 z-10 flex gap-2 justify-center items-center">
-            <a 
-              href="https://discord.gg/fYUTpD86vu"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair"
-              onMouseEnter={() => setCursorText('[ Join Discord ]')}
-              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
-            >
-              <Image
-                src="/discord.svg"
-                alt="Discord"
-                width={20}
-                height={20}
-                className="mix-blend-difference text-white/70 hover:text-white "
-              />
-            </a>
-            <a 
-              href="https://twitter.com/fiddle_factory"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair"
-              onMouseEnter={() => setCursorText('[ Join Twitter ]')}
-              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
-            >
-              <Image
-                src="/twitter.svg"
-                alt="Twitter"
-                width={20}
-                height={20}
-                className="mix-blend-difference text-white/70 hover:text-white"
-              />
-            </a>
-            <div className="relative">
-            <button
-              onClick={() => {
-                window.location.href = '/github-access';
-              }}
-              onMouseEnter={() => setCursorText('')}
-              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
-              className="red-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
-            >
-              <span>JOIN PRIVATE BETA</span>
-            </button>
-          </div>
-          </div>
+          {/* Main Content Layout */}
+          <div className="flex w-full h-screen px-6 justify-center items-center">
+            <div className="flex w-full max-w-6xl">
+              {/* Video Section - 2/3 width */}
+              <div className="w-2/3 pr-12">
+                <div className="relative w-full h-full">
+                  <video 
+                    ref={videoRef}
+                    className="w-full h-full object-cover rounded-lg shadow-lg"
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                  >
+                    {/* HLS source is attached via hls.js or directly for Safari */}
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
 
-          
+              {/* Text Section - 1/3 width */}
+              <div className="w-1/3 flex flex-col justify-center gap-2">
+                <p className="text-xs font-semibold mix-blend-difference mb-2">FIDDLE | SOFTWARE IS ART</p>
+                  <h1 className="text-4xl font-bold mb-4">Submit design QA as PRs, not Jira tickets</h1>
+                  <p className="text-md text-gray-300 leading-relaxed">
+                  Fix visual bugs faster without wasting hours of engineering time on back-and-forth.
+                  </p>
+                  
+                  {/* Join Private Beta Button - Below text */}
+                  <div className="mt-8 flex gap-4">
+                  <a 
+                    href="https://twitter.com/fiddle_factory"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-2 py-2 transition-colors hover:cursor-crosshair opacity-70 hover:opacity-100"
+                    onMouseEnter={() => setCursorText('[ Join Twitter ]')}
+                    onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
+                  >
+                    <Image
+                      src="/twitter.svg"
+                      alt="Twitter"
+                      width={20}
+                      height={20}
+                      className="mix-blend-difference text-white/70 hover:text-white"
+                    />
+                  </a>
+                    <button
+                      onClick={() => {
+                        window.location.href = '/github-access';
+                      }}
+                      onMouseEnter={() => setCursorText('')}
+                      onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
+                      className="red-l-shape text-[#FF3001] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
+                    >
+                      <span>JOIN PRIVATE BETA</span>
+                    </button>
+                    
+                  </div>
+                </div>
+              </div>
+          </div>
 
           {/* [Play] Div */}
           <div 
@@ -329,22 +333,7 @@ export default function Home() {
         </>
       )}
 
-      {/* Video Section - Common for both mobile and desktop */}
-      <div className="w-screen h-screen z-0 absolute inset-0">
-        <video 
-          ref={videoRef}
-          className={`inset-0 ${isMobile ? 'object-cover relative h-svh' : 'absolute w-screen h-screen'} rounded-lg shadow-lg`}
-          autoPlay 
-          loop 
-          muted 
-          playsInline
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-        >
-          {/* HLS source is attached via hls.js or directly for Safari */}
-          Your browser does not support the video tag.
-        </video>
-      </div>
+
     </main>
   );
 }
