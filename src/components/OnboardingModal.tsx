@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { Spinner } from '@phosphor-icons/react';
 import type { OnboardingData } from '@/types/database';
 
 interface OnboardingStep {
@@ -62,6 +63,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   const [showJumpAhead, setShowJumpAhead] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [hasClickedCopy, setHasClickedCopy] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const jumpAheadButtonRef = useRef<HTMLButtonElement>(null);
 
   // Update current step when initialStep prop changes
@@ -143,11 +145,16 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
       return;
     }
 
-    const saveSuccess = await saveOnboardingData(data, 'contact');
-    
-    if (saveSuccess) {
-      setShowContactForm(false);
-      setShowJumpAhead(true);
+    setIsSubmitting(true);
+    try {
+      const saveSuccess = await saveOnboardingData(data, 'contact');
+      
+      if (saveSuccess) {
+        setShowContactForm(false);
+        setShowJumpAhead(true);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -298,13 +305,17 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
 
           {/* Footer with Submit Button */}
           <div className="p-6 border-t border-gray-800">
-            <button
-              onClick={handleContactSubmit}
-              disabled={!data.name || !data.email || !data.email.includes('@')}
-              className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Submit <span style={{ opacity: '0.6' }}>↵</span>
-            </button>
+                          <button
+                onClick={handleContactSubmit}
+                disabled={!data.name || !data.email || !data.email.includes('@') || isSubmitting}
+                className="w-full px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+              >
+                {isSubmitting ? (
+                  <Spinner className="animate-spin" size={24} />
+                ) : (
+                  <>Submit <span className='pl-2 opacity-50'> ↵</span></>
+                )}
+              </button>
           </div>
         </div>
       </div>
