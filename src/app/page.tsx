@@ -337,7 +337,12 @@ export default function Home() {
             }
             return 0;
           })()}
-          skipContactForm={false}
+          skipContactForm={(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const step = urlParams.get('step');
+            // Skip contact form if we're coming from GitHub auth (step=final)
+            return step === 'final';
+          })()}
         />
       )}
 
