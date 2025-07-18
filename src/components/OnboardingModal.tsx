@@ -67,6 +67,10 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   // Update current step when initialStep prop changes
   useEffect(() => {
     setCurrentStep(initialStep);
+    // If we're going to the final step, update GitHub access
+    if (initialStep === ONBOARDING_STEPS.length - 1) {
+      setData(prev => ({ ...prev, githubAccess: true }));
+    }
   }, [initialStep]);
 
   // Focus jump ahead button when it appears

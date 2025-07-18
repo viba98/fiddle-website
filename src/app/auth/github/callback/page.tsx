@@ -32,7 +32,7 @@ function GitHubCallbackContent() {
           // Automatically redirect after a short delay
           setTimeout(() => {
             if (returnTo === 'onboarding') {
-              window.location.href = '/?onboarding=true';
+              window.location.href = '/?onboarding=true&step=final';
             } else {
               window.location.href = '/';
             }

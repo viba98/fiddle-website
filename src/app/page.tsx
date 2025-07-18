@@ -329,7 +329,14 @@ export default function Home() {
         <OnboardingModal 
           isOpen={showOnboardingModal} 
           onClose={() => setShowOnboardingModal(false)} 
-          initialStep={0}
+          initialStep={(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const step = urlParams.get('step');
+            if (step === 'final') {
+              return 3; // Final step index
+            }
+            return 0;
+          })()}
           skipContactForm={false}
         />
       )}
