@@ -380,6 +380,14 @@ if (typeof window !== "undefined") {
       }
       hoveredElement = target;
       target.classList.add("fiddle-hovered");
+
+      console.log('[Fiddle] fiddle-hovered triggered on:', target);
+
+      // Send hover data to parent
+      window.parent.postMessage({
+        type: 'HOVER_ELEMENT',
+        data: { /* ... */ }
+      }, '*');
     }
   });
 
