@@ -47,9 +47,10 @@ interface OnboardingModalProps {
   onClose: () => void;
   initialStep?: number;
   skipContactForm?: boolean;
+  injectedError?: string; // For Storybook/testing only
 }
 
-export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skipContactForm = false }: OnboardingModalProps) {
+export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skipContactForm = false, injectedError }: OnboardingModalProps) {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [data, setData] = useState<OnboardingData>({
     name: '',
@@ -74,6 +75,11 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
       setData(prev => ({ ...prev, githubAccess: true }));
     }
   }, [initialStep]);
+
+  // Inject error for Storybook/testing
+  useEffect(() => {
+    if (injectedError) setError(injectedError);
+  }, [injectedError]);
 
   // Focus jump ahead button when it appears
   useEffect(() => {
