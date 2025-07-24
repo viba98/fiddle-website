@@ -166,80 +166,58 @@ if (typeof window !== "undefined") {
     controlsElements = [];
   }
 
-  // Initialize animations
+  // Initialize animations for selected element only
   function initializeAnimations() {
     clearAnimationMode();
 
-    // First, look for elements with data-config-id (existing functionality)
-    const configElements = document.querySelectorAll("[data-config-id]");
+    // Only make the currently selected element animatable
+    if (selectedElement && selectedElement instanceof HTMLElement) {
+      selectedElement.classList.add("fiddle-animatable");
 
-    // Then, look for interactive elements without data-config-id
-    const interactiveSelectors = [
-      "button",
-      'input[type="button"]',
-      'input[type="submit"]',
-      'input[type="reset"]',
-      '[role="button"]',
-      "a[href]",
-      "select",
-      'input[type="checkbox"]',
-      'input[type="radio"]',
-      "[onclick]",
-      "[data-testid]"
-    ];
-
-    const interactiveElements = document.querySelectorAll(interactiveSelectors.join(", "));
-
-    // Combine both sets of elements
-    const allElements = new Set([...configElements, ...interactiveElements]);
-
-    allElements.forEach((element) => {
-      if (element instanceof HTMLElement) {
-        element.classList.add("fiddle-animatable");
-
-        // Generate a unique identifier if the element doesn't have one
-        let elementId = element.dataset.configId || element.id;
-        if (!elementId) {
-          // Create a unique ID based on element properties
-          const tagName = element.tagName.toLowerCase();
-          const text = element.textContent?.trim().substring(0, 20) || "";
-          const index = Array.from(element.parentNode?.children || []).indexOf(element);
-          elementId = `${tagName}-${text.replace(/[^a-z0-9]/gi, "")}-${index}`;
-          element.dataset.configId = elementId;
-        }
-
-        // Create controls div
-        const controls = document.createElement("div");
-        controls.className = "fiddle-controls";
-        controls.textContent = "Controls";
-        controls.dataset.forElementId = elementId;
-
-        // Add click handler for controls
-        controls.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const rect = element.getBoundingClientRect();
-          window.parent.postMessage(
-            {
-              type: "ANIMATION_ELEMENT_SELECTED",
-              element: {
-                configId: elementId,
-                position: rect,
-                nodeId: currentNodeId,
-              },
-            },
-            "*"
-          );
-        });
-
-        element.appendChild(controls);
-
-        // Store references
-        animatableElements.push(element);
-        controlsElements.push(controls);
+      // Generate a unique identifier if the element doesn't have one
+      let elementId = selectedElement.dataset.configId || selectedElement.id;
+      if (!elementId) {
+        // Create a unique ID based on element properties
+        const tagName = selectedElement.tagName.toLowerCase();
+        const text = selectedElement.textContent?.trim().substring(0, 20) || "";
+        const index = Array.from(selectedElement.parentNode?.children || []).indexOf(selectedElement);
+        elementId = `${tagName}-${text.replace(/[^a-z0-9]/gi, "")}-${index}`;
+        selectedElement.dataset.configId = elementId;
       }
-    });
 
-    console.log(`Animation mode setup: found ${allElements.size} animatable elements`);
+      // Create controls div
+      const controls = document.createElement("div");
+      controls.className = "fiddle-controls";
+      controls.textContent = "Controls";
+      controls.dataset.forElementId = elementId;
+
+      // Add click handler for controls
+      controls.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const rect = selectedElement!.getBoundingClientRect();
+        window.parent.postMessage(
+          {
+            type: "ANIMATION_ELEMENT_SELECTED",
+            element: {
+              configId: elementId,
+              position: rect,
+              nodeId: currentNodeId,
+            },
+          },
+          "*"
+        );
+      });
+
+      selectedElement.appendChild(controls);
+
+      // Store references
+      animatableElements.push(selectedElement);
+      controlsElements.push(controls);
+
+      console.log(`Animation mode setup: made selected element "${elementId}" animatable`);
+    } else {
+      console.log("Animation mode setup: no element selected");
+    }
   }
 
   // Message listener for parent window communication
