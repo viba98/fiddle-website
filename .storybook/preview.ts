@@ -170,17 +170,49 @@ if (typeof window !== "undefined") {
   function initializeAnimations() {
     clearAnimationMode();
 
-    const elements = document.querySelectorAll("[id]");
+    // First, look for elements with data-config-id (existing functionality)
+    const configElements = document.querySelectorAll("[data-config-id]");
 
-    elements.forEach((element) => {
+    // Then, look for interactive elements without data-config-id
+    const interactiveSelectors = [
+      "button",
+      'input[type="button"]',
+      'input[type="submit"]',
+      'input[type="reset"]',
+      '[role="button"]',
+      "a[href]",
+      "select",
+      'input[type="checkbox"]',
+      'input[type="radio"]',
+      "[onclick]",
+      "[data-testid]"
+    ];
+
+    const interactiveElements = document.querySelectorAll(interactiveSelectors.join(", "));
+
+    // Combine both sets of elements
+    const allElements = new Set([...configElements, ...interactiveElements]);
+
+    allElements.forEach((element) => {
       if (element instanceof HTMLElement) {
         element.classList.add("fiddle-animatable");
+
+        // Generate a unique identifier if the element doesn't have one
+        let elementId = element.dataset.configId || element.id;
+        if (!elementId) {
+          // Create a unique ID based on element properties
+          const tagName = element.tagName.toLowerCase();
+          const text = element.textContent?.trim().substring(0, 20) || "";
+          const index = Array.from(element.parentNode?.children || []).indexOf(element);
+          elementId = `${tagName}-${text.replace(/[^a-z0-9]/gi, "")}-${index}`;
+          element.dataset.configId = elementId;
+        }
 
         // Create controls div
         const controls = document.createElement("div");
         controls.className = "fiddle-controls";
         controls.textContent = "Controls";
-        controls.dataset.forElementId = element.id;
+        controls.dataset.forElementId = elementId;
 
         // Add click handler for controls
         controls.addEventListener("click", (e) => {
@@ -190,7 +222,7 @@ if (typeof window !== "undefined") {
             {
               type: "ANIMATION_ELEMENT_SELECTED",
               element: {
-                elementId: element.id,
+                configId: elementId,
                 position: rect,
                 nodeId: currentNodeId,
               },
@@ -206,6 +238,8 @@ if (typeof window !== "undefined") {
         controlsElements.push(controls);
       }
     });
+
+    console.log(`Animation mode setup: found ${allElements.size} animatable elements`);
   }
 
   // Message listener for parent window communication
@@ -229,9 +263,9 @@ if (typeof window !== "undefined") {
     }
 
     if (event.data?.type === "UPDATE_ANIMATION") {
-      const { elementId, params } = event.data.payload;
+      const { configId, elementId, params } = event.data.payload;
       const targetElement = document.querySelector(
-        `[id="${elementId}"]`
+        `[data-config-id="${configId || elementId}"]`
       );
 
       if (targetElement) {
