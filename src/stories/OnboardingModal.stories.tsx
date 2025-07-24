@@ -139,3 +139,38 @@ export const FinalStep: Story = {
 
 // Error States
 // (Will be refactored in the next step)
+
+// Error State Story
+export const ErrorState: Story = {
+  render: () => (
+    <OnboardingModal
+      isOpen={true}
+      onClose={() => {}}
+      injectedError="Network error occurred"
+    />
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows error UI by injecting error state directly, no API call required.'
+      }
+    }
+  }
+};
+
+export const ContactFormValidationError: Story = {
+  render: () => (
+    <OnboardingModal
+      isOpen={true}
+      onClose={() => {}}
+      injectedError="Please enter a valid name and email address"
+    />
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the contact form with a validation error message (e.g., missing or invalid name/email).'
+      }
+    }
+  }
+};
