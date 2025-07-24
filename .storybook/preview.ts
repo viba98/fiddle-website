@@ -170,7 +170,7 @@ if (typeof window !== "undefined") {
   function initializeAnimations() {
     clearAnimationMode();
 
-    const elements = document.querySelectorAll("[data-config-id]");
+    const elements = document.querySelectorAll("[id]");
 
     elements.forEach((element) => {
       if (element instanceof HTMLElement) {
@@ -180,7 +180,7 @@ if (typeof window !== "undefined") {
         const controls = document.createElement("div");
         controls.className = "fiddle-controls";
         controls.textContent = "Controls";
-        controls.dataset.forConfigId = element.dataset.configId;
+        controls.dataset.forElementId = element.id;
 
         // Add click handler for controls
         controls.addEventListener("click", (e) => {
@@ -190,7 +190,7 @@ if (typeof window !== "undefined") {
             {
               type: "ANIMATION_ELEMENT_SELECTED",
               element: {
-                configId: element.dataset.configId,
+                elementId: element.id,
                 position: rect,
                 nodeId: currentNodeId,
               },
@@ -229,9 +229,9 @@ if (typeof window !== "undefined") {
     }
 
     if (event.data?.type === "UPDATE_ANIMATION") {
-      const { configId, params } = event.data.payload;
+      const { elementId, params } = event.data.payload;
       const targetElement = document.querySelector(
-        `[data-config-id="${configId}"]`
+        `[id="${elementId}"]`
       );
 
       if (targetElement) {
@@ -299,9 +299,9 @@ if (typeof window !== "undefined") {
       // Detect if we're in a React environment
       const reactTarget = target as ReactElement;
       const isReactEnvironment = !!(
-        reactTarget._reactInternalFiber ||
-        reactTarget._reactInternalInstance ||
-        Object.keys(target).find((key) =>
+        reactTarget._reactInternalFiber
+        || reactTarget._reactInternalInstance
+        || Object.keys(target).find((key) =>
           key.startsWith("__reactInternalInstance")
         )
       );
@@ -329,8 +329,8 @@ if (typeof window !== "undefined") {
         try {
           Array.from(sheet.cssRules).forEach((rule) => {
             if (
-              rule instanceof CSSStyleRule &&
-              target.matches(rule.selectorText)
+              rule instanceof CSSStyleRule
+              && target.matches(rule.selectorText)
             ) {
               styles.push(`${rule.selectorText} { ${rule.style.cssText} }`);
             }
