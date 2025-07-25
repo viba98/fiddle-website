@@ -291,6 +291,7 @@ if (typeof window !== "undefined") {
 
   // Add click event listener for element selection
   document.addEventListener("click", (event) => {
+    console.log('hover', { isSelectionMode, isAnimationMode, target: event.target });
     if (!isSelectionMode || isAnimationMode){
       console.log('exiting');
       return;
@@ -376,6 +377,7 @@ if (typeof window !== "undefined") {
 
   // Add hover effects
   document.addEventListener("mouseover", (event) => {
+    console.log('hover', { isSelectionMode, isAnimationMode, target: event.target });
     if (!isSelectionMode || isAnimationMode) return;
 
     const target = event.target;
