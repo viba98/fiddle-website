@@ -289,6 +289,89 @@ if (typeof window !== "undefined") {
     }
   });
 
+  // Add a document-level click handler in the capture phase to ensure selection always works
+
+  document.addEventListener('click', function(event) {
+    console.log('[Fiddle] capture-phase click', { isSelectionMode, isAnimationMode, target: event.target });
+    if (!isSelectionMode || isAnimationMode) {
+      console.log('[Fiddle] not selecting (capture phase)');
+      return;
+    }
+
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) {
+      console.log('[Fiddle] not html element (capture phase)');
+      return;
+    }
+
+    // Clear previous selection
+    clearSelection();
+
+    // Set new selection
+    selectedElement = target;
+    target.classList.add('fiddle-selected');
+
+    // Get element information
+    const rect = target.getBoundingClientRect();
+
+    // Detect if we're in a React environment
+    const reactTarget = target as ReactElement;
+    const isReactEnvironment = !!(
+      reactTarget._reactInternalFiber
+      || reactTarget._reactInternalInstance
+      || Object.keys(target).find((key) =>
+        key.startsWith("__reactInternalInstance")
+      )
+    );
+
+    // Generate JSX representation
+    let jsx = `<${target.tagName.toLowerCase()}`;
+
+    if (target.id) {
+      jsx += ` id="${target.id}"`;
+    }
+    if (target.className) {
+      // Use appropriate attribute based on environment
+      jsx += isReactEnvironment
+        ? ` className="${target.className}"`
+        : ` class="${target.className}"`;
+    }
+
+    jsx += `>${
+      target.textContent?.trim() || ""
+    }</${target.tagName.toLowerCase()}>`;
+
+    // Get stylesheet rules
+    const styles: string[] = [];
+    Array.from(document.styleSheets).forEach((sheet) => {
+      try {
+        Array.from(sheet.cssRules).forEach((rule) => {
+          if (
+            rule instanceof CSSStyleRule
+            && target.matches(rule.selectorText)
+          ) {
+            styles.push(`${rule.selectorText} { ${rule.style.cssText} }`);
+          }
+        });
+      } catch {
+        // Skip cross-origin stylesheets
+      }
+    });
+
+    window.parent.postMessage(
+      {
+        type: "ELEMENT_SELECTED",
+        element: {
+          jsx,
+          styles,
+          position: rect,
+          nodeId: currentNodeId,
+        },
+      },
+      "*"
+    );
+  }, true); // <-- capture phase
+
   // Add click event listener for element selection
   document.addEventListener("click", (event) => {
     console.log('hover', { isSelectionMode, isAnimationMode, target: event.target });
