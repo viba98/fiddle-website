@@ -516,6 +516,7 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
               <div className="w-full bg-gray-800 rounded-full h-2">
                 <div
                   className="bg-[#FF3001] h-2 rounded-full transition-all duration-300"
+                  data-config-id="div--0"
                   style={{ width: `${progress}%` }}
                 />
               </div>
