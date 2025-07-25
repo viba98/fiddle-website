@@ -291,7 +291,10 @@ if (typeof window !== "undefined") {
 
   // Add click event listener for element selection
   document.addEventListener("click", (event) => {
-    if (!isSelectionMode || isAnimationMode) return;
+    if (!isSelectionMode || isAnimationMode){
+      console.log('exiting');
+      return;
+    } 
 
     event.preventDefault();
     event.stopPropagation();
@@ -366,6 +369,8 @@ if (typeof window !== "undefined") {
         },
         "*"
       );
+    } else {
+      console.log('not html elemnt')
     }
   });
 
