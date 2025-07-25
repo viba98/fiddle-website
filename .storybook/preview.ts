@@ -213,11 +213,7 @@ if (typeof window !== "undefined") {
       // Store references
       animatableElements.push(selectedElement);
       controlsElements.push(controls);
-
-      console.log(`Animation mode setup: made selected element "${elementId}" animatable`);
-    } else {
-      console.log("Animation mode setup: no element selected");
-    }
+    } 
   }
 
   // Message listener for parent window communication
@@ -282,7 +278,6 @@ if (typeof window !== "undefined") {
         const script = document.createElement("script");
         script.textContent = event.data.script;
         document.head.appendChild(script);
-        console.log("Injected script executed");
       } catch (err) {
         console.error("Failed to execute injected script:", err);
       }
@@ -292,17 +287,10 @@ if (typeof window !== "undefined") {
   // Add a document-level click handler in the capture phase to ensure selection always works
 
   document.addEventListener('click', function(event) {
-    console.log('[Fiddle] capture-phase click', { isSelectionMode, isAnimationMode, target: event.target });
-    if (!isSelectionMode || isAnimationMode) {
-      console.log('[Fiddle] not selecting (capture phase)');
-      return;
-    }
+    if (!isSelectionMode || isAnimationMode) return;
 
     const target = event.target;
-    if (!(target instanceof HTMLElement)) {
-      console.log('[Fiddle] not html element (capture phase)');
-      return;
-    }
+    if (!(target instanceof HTMLElement)) return;
 
     // Clear previous selection
     clearSelection();
@@ -374,7 +362,6 @@ if (typeof window !== "undefined") {
 
   // Add hover effects
   document.addEventListener("mouseover", (event) => {
-    console.log('hover', { isSelectionMode, isAnimationMode, target: event.target });
     if (!isSelectionMode || isAnimationMode) return;
 
     const target = event.target;
@@ -384,8 +371,6 @@ if (typeof window !== "undefined") {
       }
       hoveredElement = target;
       target.classList.add("fiddle-hovered");
-
-      console.log('[Fiddle] fiddle-hovered triggered on:', target);
 
       // Send hover data to parent
       window.parent.postMessage({
