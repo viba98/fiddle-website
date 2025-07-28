@@ -346,6 +346,8 @@ if (typeof window !== "undefined") {
       }
     });
 
+    const configId = target.dataset.configId || target.id;
+
     window.parent.postMessage(
       {
         type: "ELEMENT_SELECTED",
@@ -354,6 +356,8 @@ if (typeof window !== "undefined") {
           styles,
           position: rect,
           nodeId: currentNodeId,
+          configId,
+          elementId: configId,
         },
       },
       "*"
