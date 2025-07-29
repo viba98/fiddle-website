@@ -1,5 +1,5 @@
 interface ProgressBarProps {
-  currentStep: number;
+  curStep: number;
   totalSteps: number;
   showStepText?: boolean;
   showPercentage?: boolean;
@@ -7,20 +7,20 @@ interface ProgressBarProps {
 }
 
 export default function ProgressBar({ 
-  currentStep, 
+  curStep, 
   totalSteps, 
   showStepText = true, 
   showPercentage = true,
   className = ""
 }: ProgressBarProps) {
-  const progress = ((currentStep + 1) / totalSteps) * 100;
+  const progress = ((curStep + 1) / totalSteps) * 100;
 
   return (
     <div className={`mb-4 ${className}`}>
       {(showStepText || showPercentage) && (
         <div className="flex justify-between text-sm text-gray-400 mb-2">
           {showStepText && (
-            <span>Step {currentStep + 1} of {totalSteps}</span>
+            <span>Step {curStep + 1} of {totalSteps}</span>
           )}
           {showPercentage && (
             <span>{Math.round(progress)}%</span>
@@ -35,4 +35,4 @@ export default function ProgressBar({
       </div>
     </div>
   );
-} 
+}
