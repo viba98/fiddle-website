@@ -249,10 +249,9 @@ if (typeof window !== "undefined") {
 
       if (targetElement) {
         console.log('📤 Preview: Dispatching animation:update event with params', params);
-        const updateEvent = new CustomEvent("animation:update", {
-          detail: params,
+        Object.entries(params).forEach(([key, value]) => {
+          targetElement.style.setProperty(`--${key}`, value);
         });
-        targetElement.dispatchEvent(updateEvent);
       } else {
         console.log('❌ Preview: No target element found for configId/elementId', configId || elementId);
       }
