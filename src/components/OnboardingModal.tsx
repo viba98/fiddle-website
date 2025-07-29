@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Spinner } from '@phosphor-icons/react';
 import type { OnboardingData } from '@/types/database';
+import ProgressBar from './ProgressBar';
 
 interface OnboardingStep {
   id: string;
@@ -116,7 +117,6 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   }, []);
 
   const currentStepData = ONBOARDING_STEPS[currentStep];
-  const progress = ((currentStep + 1) / ONBOARDING_STEPS.length) * 100;
 
   const saveOnboardingData = async (currentData: OnboardingData, stepName: string) => {
     try {
@@ -508,18 +508,10 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
         {currentStepData.type !== 'final' && (
           <div className="p-6 border-t border-gray-800">
             {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="flex justify-between text-sm text-gray-400 mb-2">
-                <span>Step {currentStep + 1} of {ONBOARDING_STEPS.length}</span>
-                <span>{Math.round(progress)}%</span>
-              </div>
-              <div className="w-full bg-gray-800 rounded-full h-2">
-                <div
-                  className="bg-[#FF3001] h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
+            <ProgressBar 
+              currentStep={currentStep}
+              totalSteps={ONBOARDING_STEPS.length}
+            />
             
             {/* Next button for GitHub step */}
             {currentStepData.type === 'github' && hasClickedCopy && (
