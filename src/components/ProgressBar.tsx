@@ -18,7 +18,7 @@ export default function ProgressBar({
   return (
     <div className={`mb-4 ${className}`}>
       {(showStepText || showPercentage) && (
-        <div className="flex justify-between text-sm text-gray-400 mb-2">
+        <div className="flex justify-between text-sm text-gray-400">
           {showStepText && (
             <span>Step {currentStep + 1} of {totalSteps}</span>
           )}
