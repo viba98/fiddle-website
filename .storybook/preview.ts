@@ -238,15 +238,23 @@ if (typeof window !== "undefined") {
 
     if (event.data?.type === "UPDATE_ANIMATION") {
       const { configId, elementId, params } = event.data.payload;
+      console.log('🎬 Preview: Received UPDATE_ANIMATION', { configId, elementId, params });
+      console.log('🔍 Preview: Full params object:', JSON.stringify(params, null, 2));
+
       const targetElement = document.querySelector(
         `[data-config-id="${configId || elementId}"]`
       );
+      console.log('🎯 Preview: Found target element?', !!targetElement, 'for selector', `[data-config-id="${configId || elementId}"]`);
+
 
       if (targetElement) {
+        console.log('📤 Preview: Dispatching animation:update event with params', params);
         const updateEvent = new CustomEvent("animation:update", {
           detail: params,
         });
         targetElement.dispatchEvent(updateEvent);
+      } else {
+        console.log('❌ Preview: No target element found for configId/elementId', configId || elementId);
       }
     }
 
