@@ -186,33 +186,33 @@ if (typeof window !== "undefined") {
       }
 
       // Create controls div
-      const controls = document.createElement("div");
-      controls.className = "fiddle-controls";
-      controls.textContent = "Controls";
-      controls.dataset.forElementId = elementId;
+      // const controls = document.createElement("div");
+      // controls.className = "fiddle-controls";
+      // controls.textContent = "Controls";
+      // controls.dataset.forElementId = elementId;
 
-      // Add click handler for controls
-      controls.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const rect = selectedElement!.getBoundingClientRect();
-        window.parent.postMessage(
-          {
-            type: "ANIMATION_ELEMENT_SELECTED",
-            element: {
-              configId: elementId,
-              position: rect,
-              nodeId: currentNodeId,
-            },
-          },
-          "*"
-        );
-      });
+      // // Add click handler for controls
+      // controls.addEventListener("click", (e) => {
+      //   e.stopPropagation();
+      //   const rect = selectedElement!.getBoundingClientRect();
+      //   window.parent.postMessage(
+      //     {
+      //       type: "ANIMATION_ELEMENT_SELECTED",
+      //       element: {
+      //         configId: elementId,
+      //         position: rect,
+      //         nodeId: currentNodeId,
+      //       },
+      //     },
+      //     "*"
+      //   );
+      // });
 
-      selectedElement.appendChild(controls);
+      // selectedElement.appendChild(controls);
 
       // Store references
       animatableElements.push(selectedElement);
-      controlsElements.push(controls);
+      // controlsElements.push(controls);
     } 
   }
 
