@@ -334,6 +334,71 @@ if (typeof window !== "undefined") {
     } else {
       console.log('❌ No React DevTools hook found - not a React app or DevTools not available');
     }
+
+    // Get React component info if DevTools hook is available
+    let reactComponentInfo = null;
+    if (hasDevToolsHook) {
+      try {
+        // Get React DOM renderer (renderer ID 1)
+        const renderer = hook.renderers.get(1);
+        
+        if (renderer) {
+          // Find the fiber node for this element
+          let fiber = renderer.getFiberNodeForElement(target);
+          
+          if (fiber) {
+            // Walk up the fiber tree to find component info
+            const componentStack = [];
+            let currentFiber = fiber;
+            
+            while (currentFiber) {
+              if (currentFiber.type && typeof currentFiber.type === 'function') {
+                const componentName = currentFiber.type.name || currentFiber.type.displayName;
+                const sourceFile = currentFiber._debugSource;
+                
+                if (sourceFile) {
+                  // Filter out /home/user/ from the path
+                  let fileName = sourceFile.fileName;
+                  if (fileName.startsWith('/home/user/')) {
+                    fileName = fileName.substring('/home/user/'.length);
+                  }
+                  
+                  componentStack.push({
+                    name: componentName,
+                    sourceFile: {
+                      fileName: fileName,
+                      lineNumber: sourceFile.lineNumber,
+                      columnNumber: sourceFile.columnNumber
+                    }
+                  });
+                } else {
+                  componentStack.push({
+                    name: componentName,
+                    sourceFile: null
+                  });
+                }
+              }
+              
+              currentFiber = currentFiber.return;
+            }
+            
+            reactComponentInfo = {
+              componentStack,
+              sourceFile: componentStack[0]?.sourceFile,
+              componentName: componentStack[0]?.name
+            };
+            
+            console.log('🎯 React component info:', reactComponentInfo);
+          } else {
+            console.log('❌ No fiber node found for element');
+          }
+        } else {
+          console.log('❌ No React DOM renderer found');
+        }
+      } catch (error) {
+        console.warn('Error getting React component info:', error);
+      }
+    }
     
 
     // Generate JSX representation
@@ -382,6 +447,7 @@ if (typeof window !== "undefined") {
           nodeId: currentNodeId,
           configId,
           elementId: configId,
+          reactComponentInfo, // Add React component info
         },
       },
       "*"
