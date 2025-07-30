@@ -320,6 +320,18 @@ if (typeof window !== "undefined") {
       )
     );
 
+    // Lightweight test: Check if React DevTools hook is accessible
+    const hook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
+    const hasDevToolsHook = !!hook;
+    
+    if (hasDevToolsHook) {
+      console.log('✅ React DevTools hook found - DevTools available');
+      console.log('Renderers available:', hook.renderers?.size || 0);
+    } else {
+      console.log('❌ No React DevTools hook found - not a React app or DevTools not available');
+    }
+    
+
     // Generate JSX representation
     let jsx = `<${target.tagName.toLowerCase()}`;
 
