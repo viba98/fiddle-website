@@ -327,6 +327,10 @@ if (typeof window !== "undefined") {
     if (hasDevToolsHook) {
       console.log('✅ React DevTools hook found - DevTools available');
       console.log('Renderers available:', hook.renderers?.size || 0);
+
+      setTimeout(() => {
+        console.log('Delayed check - Renderers available:', hook.renderers?.size || 0);
+      }, 1000);
     } else {
       console.log('❌ No React DevTools hook found - not a React app or DevTools not available');
     }
