@@ -35,7 +35,7 @@ twitter: https://twitter.com/fiddle_factory`);
 logBanner();
 
 const timestamps = [
-  '00:00 | IMPORT AS USER journey',
+  '00:00 | IMPORT: Github → USER journey',
   '00:10 | SPOT EDIT',
   '00:15 | Animate mode',
   '00:20 | custom editor panel',
@@ -313,7 +313,7 @@ export default function Home() {
 
           {/* Timestamps Section */}
           <div 
-            className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)]"
+            className="absolute bottom-4 left-4 right-4 z-10 flex flex-col w-[calc(100%-32px)] gap-2"
             onMouseEnter={() => {
               setCursorText('');
             }}
@@ -364,21 +364,6 @@ export default function Home() {
               ></div>
             </div>
 
-      <div className="flex justify-between w-full mb-2 z-10 items-center">
-        {timestamps.map((timestamp, index) => (
-          <span
-            key={index}
-            className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
-          >
-            {timestamp}
-          </span>
-        ))}
-        
-      </div>
-
-            {/* Dotted Line Above Image Section */}
-            <div className="custom-divider"></div>
-
             {/* Image Section */}
             <div className="flex gap-4 z-10 py-2 w-full">
               {imageUrls.map((src, index) => (
@@ -397,6 +382,17 @@ export default function Home() {
 
             {/* Dotted Line Below Image Section */}
             <div className="custom-divider"></div>
+            <div className="flex justify-between w-full mb-2 z-10 items-center">
+              {timestamps.map((timestamp, index) => (
+                <span
+                  key={index}
+                  className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
+                >
+                  {timestamp}
+                </span>
+              ))}
+          </div>
+
           </div>
 
           {/* [Play] Div */}
