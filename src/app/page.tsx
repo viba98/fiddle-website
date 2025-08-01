@@ -143,7 +143,7 @@ export default function Home() {
     };
   }, [isMobile]);
 
-  const videoSrc = "https://vz-b083d267-5c4.b-cdn.net/6fbd8bed-c06a-41b3-a3e0-9472f8c3a9fe/playlist.m3u8";
+  const videoSrc = "https://customer-jxttjt9eb2p8knaj.cloudflarestream.com/d85e270b0b06a926462bb93fbfdbc9f6/manifest/video.m3u8";
 
   useEffect(() => {
     if (videoRef.current) {
