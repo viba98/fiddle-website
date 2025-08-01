@@ -301,14 +301,6 @@ export default function Home() {
             </a>
             <div className="relative">
             <button
-              onClick={() => window.open('https://rapid-stream.notion.site/Founding-Engineer-1cb7b9f0449880d9841fdc12ed641b4e?pvs=4', '_blank')}
-              onMouseEnter={() => setCursorText('')}
-              onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
-              className="white-l-shape text-[#fff] transition-colors text-xs font-semibold uppercase mix-blend-difference hover:cursor-crosshair"
-            >
-              <span>HIRING</span>
-            </button>
-            <button
               onClick={() => setShowOnboarding(true)}
               onMouseEnter={() => setCursorText('')}
               onMouseLeave={() => setCursorText(isPlaying ? '[ pause ]' : '[ play ]')}
