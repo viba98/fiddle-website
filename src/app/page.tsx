@@ -34,7 +34,7 @@ twitter: https://twitter.com/fiddle_factory`);
 logBanner();
 
 const timestamps = [
-  '00:00 | IMPORT FROM GITHUB AS USER journey',
+  '00:00 | IMPORT AS USER journey',
   '00:10 | SPOT EDIT',
   '00:15 | Animate mode',
   '00:20 | custom editor panel',
