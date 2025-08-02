@@ -4,6 +4,8 @@ import Image from "next/image";
 import Hls from 'hls.js';
 import { useState, useEffect, useCallback, useRef } from "react";
 import OnboardingModal from '@/components/OnboardingModal';
+import Dock from '@/components/Dock';
+import { DockButton } from '@/types/dock';
 
 const imageUrls = [
   '/img0.png',
@@ -41,6 +43,30 @@ const timestamps = [
   '00:20 | custom editor panel',
   '00:25 | submit pr'
 ]
+
+// Create dock items from timeline images
+const createDockItems = (videoRef: React.RefObject<HTMLVideoElement | null>): DockButton[] => {
+  return imageUrls.map((src, index) => ({
+    icon: (
+      <Image
+        className="w-full h-full object-cover rounded-lg"
+        src={`/polish-pr${src}`}
+        alt={`Timeline ${index + 1}`}
+        width={60}
+        height={60}
+        layout="responsive"
+      />
+    ),
+    action: () => {
+      // Calculate the time position based on the image index
+      if (videoRef.current && videoRef.current.duration) {
+        const timePerImage = videoRef.current.duration / imageUrls.length;
+        const newTime = index * timePerImage;
+        videoRef.current.currentTime = newTime;
+      }
+    }
+  }));
+};
 
 
 
@@ -322,62 +348,10 @@ export default function Home() {
             }}
             onClick={handleTimestampClick}
           >
-            <div className="z-20 gap-0">
-              {/* orange Scrubber Line */}
-              <div 
-                className="absolute bg-[#FF3001] z-20"
-                style={{
-                  left: `${scrubberPosition - 2}px`, 
-                  height: '120%', 
-                  width: '1px',
-                  top: '-10%',
-                  transition: 'left 0.05s ease-out'
-                }}
-              ></div>
 
-              {/* Triangle at the top of the Scrubber */}
-              <div 
-                className="absolute z-20"
-                style={{
-                  left: `${scrubberPosition - 7}px`, 
-                  top: '-12%',
-                  width: 0,
-                  height: 0,
-                  borderLeft: '6px solid transparent',
-                  borderRight: '6px solid transparent',
-                  borderTop: '8px solid #FF3001',
-                  transition: 'left 0.05s ease-out'
-                }}
-              ></div>
-
-              {/* Rectangle Above the Triangle */}
-              <div 
-                className="absolute z-20"
-                style={{
-                  left: `${scrubberPosition - 7}px`, 
-                  top: 'calc(-12% - 5px)', 
-                  width: '12px', 
-                  height: '5px', 
-                  backgroundColor: '#FF3001',
-                  transition: 'left 0.05s ease-out'
-                }}
-              ></div>
-            </div>
-
-            {/* Image Section */}
-            <div className="flex gap-4 z-10 py-2 w-full">
-              {imageUrls.map((src, index) => (
-                <div key={index} className="flex-1">
-                  <Image
-                    className="opacity-60 hover:opacity-100 w-full h-auto"
-                    src={`/polish-pr${src}`}
-                    alt={`Image ${index + 1}`}
-                    width={60}
-                    height={60}
-                    layout="responsive"
-                  />
-                </div>
-              ))}
+            {/* Dock Section */}
+            <div className="z-10 py-2 w-full flex flex-row justify-center">
+              <Dock items={createDockItems(videoRef)} />
             </div>
 
             {/* Dotted Line Below Image Section */}

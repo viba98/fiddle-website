@@ -203,3 +203,39 @@ html, body {
 .white-l-shape:hover span::after {
   opacity: 1;
 }
+
+/* Dock styles */
+.dock {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px;
+  margin: 0 auto;
+  display: inline-flex;
+}
+
+.dock-item {
+  background-color: transparent;
+  border-radius: 0;
+  text-align: center;
+  color: #000;
+  outline: 0;
+  border: 0px solid transparent;
+  display: block;
+  cursor: pointer;
+  padding: 0px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.dock-item:hover {
+  opacity: 1;
+}
+
+.dock-item svg {
+  width: 50%;
+  height: 50%;
+  display: block;
+  margin: 0 auto;
+}
