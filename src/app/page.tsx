@@ -363,13 +363,25 @@ export default function Home() {
                 }}
               ></div>
             </div>
+            <div className="flex justify-between w-full mb-2 z-10 items-center">
+              {timestamps.map((timestamp, index) => (
+                <span
+                  key={index}
+                  className="flex-grow text-white/80 transition-colors text-xs font-semibold uppercase mix-blend-difference"
+                >
+                  {timestamp}
+                </span>
+              ))}
+          </div>
+          {/* Dotted Line above Image Section */}
+          <div className="custom-divider"></div>
 
             {/* Image Section */}
             <div className="flex gap-4 z-10 py-2 w-full">
               {imageUrls.map((src, index) => (
                 <div key={index} className="flex-1">
                   <Image
-                    className="opacity-60 hover:opacity-100 w-full h-auto"
+                    className="opacity-60 hover:opacity-100 w-full h-auto transition-all ease-linear duration-150"
                     src={`/polish-pr${src}`}
                     alt={`Image ${index + 1}`}
                     width={60}
@@ -382,16 +394,7 @@ export default function Home() {
 
             {/* Dotted Line Below Image Section */}
             <div className="custom-divider"></div>
-            <div className="flex justify-between w-full mb-2 z-10 items-center">
-              {timestamps.map((timestamp, index) => (
-                <span
-                  key={index}
-                  className="flex-grow text-white transition-colors text-xs font-semibold uppercase mix-blend-difference"
-                >
-                  {timestamp}
-                </span>
-              ))}
-          </div>
+            
 
           </div>
 

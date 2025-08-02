@@ -40,6 +40,7 @@ html, body {
   height: calc(1 / var(--gfs)* 1rem);
   mix-blend-mode: difference;
   transform: translateZ(0);
+  opacity: 60%;
 }
 
 .red-l-shape {
