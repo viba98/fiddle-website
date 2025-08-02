@@ -25,7 +25,7 @@ const Dock = ({ items }: Props) => {
       {items.map((item, index) => (
         <DockItem
           key={index}
-          size={110}
+          size={80}
           magnification={1.8}
           mouseX={mouseX}
           icon={item.icon}

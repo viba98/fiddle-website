@@ -350,8 +350,8 @@ export default function Home() {
           >
 
             {/* Dock Section */}
-            <div className="z-10 py-2 w-full flex flex-row justify-center">
-              <Dock items={createDockItems(videoRef)} />
+            <div className="z-10 w-full flex flex-row justify-center">
+              <Dock items={createDockItems(videoRef)} />z
             </div>
 
             {/* Dotted Line Below Image Section */}
