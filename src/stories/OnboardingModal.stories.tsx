@@ -174,3 +174,23 @@ export const ContactFormValidationError: Story = {
     }
   }
 };
+
+// Loading State Story
+export const LoadingState: Story = {
+  render: () => (
+    <OnboardingModal
+      isOpen={true}
+      onClose={() => {}}
+      injectedLoadingState={true}
+      injectedName="John Doe"
+      injectedEmail="john@example.com"
+    />
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the contact form with pre-filled data and the submit button in its loading state, displaying the spinner and disabled button.'
+      }
+    }
+  }
+};

@@ -49,13 +49,16 @@ interface OnboardingModalProps {
   initialStep?: number;
   skipContactForm?: boolean;
   injectedError?: string; // For Storybook/testing only
+  injectedLoadingState?: boolean; // For Storybook/testing only
+  injectedName?: string; // For Storybook/testing only
+  injectedEmail?: string; // For Storybook/testing only
 }
 
-export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skipContactForm = false, injectedError }: OnboardingModalProps) {
+export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skipContactForm = false, injectedError, injectedLoadingState, injectedName, injectedEmail }: OnboardingModalProps) {
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [data, setData] = useState<OnboardingData>({
-    name: '',
-    email: '',
+    name: injectedName || '',
+    email: injectedEmail || '',
     teamSize: '',
     designerType: '',
     githubAccess: false
@@ -65,7 +68,7 @@ export default function OnboardingModal({ isOpen, onClose, initialStep = 0, skip
   const [showJumpAhead, setShowJumpAhead] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [hasClickedCopy, setHasClickedCopy] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(injectedLoadingState || false);
   const jumpAheadButtonRef = useRef<HTMLButtonElement>(null);
 
   // Update current step when initialStep prop changes
