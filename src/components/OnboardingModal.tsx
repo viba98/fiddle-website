@@ -5,6 +5,7 @@ import { Spinner } from '@phosphor-icons/react';
 import type { OnboardingData } from '@/types/database';
 import ProgressBar from './ProgressBar';
 import ContactForm from './ContactForm';
+import FinalStep from './FinalStep';
 
 interface OnboardingStep {
   id: string;
@@ -426,30 +427,10 @@ Can you complete the flow for the private beta here -> https://fiddle.is/? Thank
           )}
 
           {currentStepData.type === 'final' && (
-            <div 
-              className="text-start space-y-4"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleNext();
-                }
-              }}
-              tabIndex={0}
-              autoFocus
-            >
-              {/* <div className="text-6xl mb-4">We'll email you soon with access!</div> */}
-              <p className="text-sm text-gray-500">
-              We&apos;ll email you soon with access!
-              </p>
-              {/* <div className="pt-4">
-                <a
-                  href="/ball.dmg"
-                  download
-                  className="inline-block px-6 py-3 bg-[#FF3001] text-white rounded-lg hover:bg-[#FF3001]/80 transition-colors"
-                >
-                  Download Fiddle Ball
-                </a>
-              </div> */}
-            </div>
+            <FinalStep
+              onNext={handleNext}
+              onClose={onClose}
+            />
           )}
         </div>
 
