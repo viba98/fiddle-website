@@ -213,7 +213,7 @@ if (typeof window !== "undefined") {
       // Store references
       animatableElements.push(selectedElement);
       // controlsElements.push(controls);
-    } 
+    }
   }
 
   // Message listener for parent window communication
@@ -238,23 +238,16 @@ if (typeof window !== "undefined") {
 
     if (event.data?.type === "UPDATE_ANIMATION") {
       const { configId, elementId, params } = event.data.payload;
-      console.log('🎬 Preview: Received UPDATE_ANIMATION', { configId, elementId, params });
-      console.log('🔍 Preview: Full params object:', JSON.stringify(params, null, 2));
-
+      
       const targetElement = document.querySelector(
         `[data-config-id="${configId || elementId}"]`
       );
-      console.log('🎯 Preview: Found target element?', !!targetElement, 'for selector', `[data-config-id="${configId || elementId}"]`);
-
 
       if (targetElement) {
-        console.log('📤 Preview: Dispatching animation:update event with params', params);
         const updateEvent = new CustomEvent("animation:update", {
           detail: params,
         });
         targetElement.dispatchEvent(updateEvent);
-      } else {
-        console.log('❌ Preview: No target element found for configId/elementId', configId || elementId);
       }
     }
 
@@ -294,7 +287,7 @@ if (typeof window !== "undefined") {
 
   // Add a document-level click handler in the capture phase to ensure selection always works
 
-  document.addEventListener('click', function(event) {
+  document.addEventListener('click', (event) => {
     if (!isSelectionMode || isAnimationMode) return;
 
     const target = event.target;
@@ -319,87 +312,6 @@ if (typeof window !== "undefined") {
         key.startsWith("__reactInternalInstance")
       )
     );
-
-    // Lightweight test: Check if React DevTools hook is accessible
-    const hook = (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
-    const hasDevToolsHook = !!hook;
-    
-    if (hasDevToolsHook) {
-      console.log('✅ React DevTools hook found - DevTools available');
-      console.log('Renderers available:', hook.renderers?.size || 0);
-
-      setTimeout(() => {
-        console.log('Delayed check - Renderers available:', hook.renderers?.size || 0);
-      }, 1000);
-    } else {
-      console.log('❌ No React DevTools hook found - not a React app or DevTools not available');
-    }
-
-    // Get React component info if DevTools hook is available
-    let reactComponentInfo = null;
-    if (hasDevToolsHook) {
-      try {
-        // Get React DOM renderer (renderer ID 1)
-        const renderer = hook.renderers.get(1);
-        
-        if (renderer) {
-          // Find the fiber node for this element
-          let fiber = renderer.getFiberNodeForElement(target);
-          
-          if (fiber) {
-            // Walk up the fiber tree to find component info
-            const componentStack = [];
-            let currentFiber = fiber;
-            
-            while (currentFiber) {
-              if (currentFiber.type && typeof currentFiber.type === 'function') {
-                const componentName = currentFiber.type.name || currentFiber.type.displayName;
-                const sourceFile = currentFiber._debugSource;
-                
-                if (sourceFile) {
-                  // Filter out /home/user/ from the path
-                  let fileName = sourceFile.fileName;
-                  if (fileName.startsWith('/home/user/')) {
-                    fileName = fileName.substring('/home/user/'.length);
-                  }
-                  
-                  componentStack.push({
-                    name: componentName,
-                    sourceFile: {
-                      fileName: fileName,
-                      lineNumber: sourceFile.lineNumber,
-                      columnNumber: sourceFile.columnNumber
-                    }
-                  });
-                } else {
-                  componentStack.push({
-                    name: componentName,
-                    sourceFile: null
-                  });
-                }
-              }
-              
-              currentFiber = currentFiber.return;
-            }
-            
-            reactComponentInfo = {
-              componentStack,
-              sourceFile: componentStack[0]?.sourceFile,
-              componentName: componentStack[0]?.name
-            };
-            
-            console.log('🎯 React component info:', reactComponentInfo);
-          } else {
-            console.log('❌ No fiber node found for element');
-          }
-        } else {
-          console.log('❌ No React DOM renderer found');
-        }
-      } catch (error) {
-        console.warn('Error getting React component info:', error);
-      }
-    }
-    
 
     // Generate JSX representation
     let jsx = `<${target.tagName.toLowerCase()}`;
@@ -436,7 +348,7 @@ if (typeof window !== "undefined") {
     });
 
     const configId = target.dataset.configId || target.id;
-
+    
     window.parent.postMessage(
       {
         type: "ELEMENT_SELECTED",
@@ -447,12 +359,11 @@ if (typeof window !== "undefined") {
           nodeId: currentNodeId,
           configId,
           elementId: configId,
-          reactComponentInfo, // Add React component info
         },
       },
       "*"
     );
-  }, true);
+  }, true); // <-- capture phase
 
   // Add hover effects
   document.addEventListener("mouseover", (event) => {
