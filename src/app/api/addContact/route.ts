@@ -3,14 +3,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Make request to Loops API
-    const response = await fetch('https://app.loops.so/api/v1/contacts/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.VITE_LOOPS_API_AUTH_TOKEN}`
-      },
-      body: JSON.stringify(body),
-    });
+  
 
     const data = await response.json();
     
@@ -27,3 +20,4 @@ export async function POST(request: Request) {
     });
   }
 }
+
