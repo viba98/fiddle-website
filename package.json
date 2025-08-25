@@ -14,7 +14,7 @@
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/supabase-js": "^2.50.2",
     "@types/uuid": "^10.0.0",
-    "fiddle-devtools": "latest",
+    "fiddle-devtools": "file:fiddle-devtools",
     "hls.js": "^1.6.7",
     "next": "15.1.4",
     "react": "^19.0.0",
