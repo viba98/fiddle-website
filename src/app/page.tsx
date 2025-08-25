@@ -1,5 +1,6 @@
 'use client';
 
+import 'fiddle-devtools';
 import Image from "next/image";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Hls from 'hls.js';
